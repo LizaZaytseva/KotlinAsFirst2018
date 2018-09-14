@@ -23,7 +23,10 @@ import java.util.regex.Pattern
  * Обратите внимание, что функция является целочисленной,
  * то есть деление также следует трактовать как целочисленное.
  */
-fun parseExpr(inputName: String, values: List<Int>): Map<Int, Int> {
+fun parseExpr(
+        inputName: String,
+        values: List<Int>
+): Map<Int, Int> {
     val expr = File(inputName).readLines().firstOrNull()?.parseExpr() ?: throw IllegalArgumentException()
     val result = mutableMapOf<Int, Int>()
     for (value in values) {
