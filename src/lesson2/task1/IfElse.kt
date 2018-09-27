@@ -64,12 +64,16 @@ fun minBiRoot(a: Double, b: Double, c: Double): Double {
  * Мой возраст. Для заданного 0 < n < 200, рассматриваемого как возраст человека,
  * вернуть строку вида: «21 год», «32 года», «12 лет».
  */
-fun ageDescription(age: Int): String = if (((age % 100) > 4) and ((age %100) < 21))
-    "$age лет"
-else when (age%10) {
-1 -> "$age год"
-2 , 3 , 4 -> "$age года"
-else -> "$age лет"}
+fun ageDescription(age: Int): String =
+        if (((age % 100) > 4) and ((age % 100) < 21))
+            "$age лет"
+        else when (age % 10) {
+            1 -> "$age год"
+            2 -> "$age года"
+            3 -> "$age года"
+            4 -> "$age года"
+            else -> "$age лет"
+        }
 
 /**
  * Простая
@@ -101,14 +105,13 @@ fun timeForHalfWay(t1: Double, v1: Double,
  */
 fun whichRookThreatens(kingX: Int, kingY: Int,
                        rookX1: Int, rookY1: Int,
-                       rookX2: Int, rookY2: Int): Int {
-    return when {
+                       rookX2: Int, rookY2: Int): Int =
+    when {
        (kingX != rookX1) && (kingY != rookY1) && (kingX != rookX2) && (kingY != rookY2) -> 0
        (((kingX == rookX1) || (kingY == rookY1)) && ((kingX == rookX2) || (kingY == rookY2))) -> 3
         (kingX == rookX1) || (kingY == rookY1) -> 1
         else -> 2
     }
-}
 
  /**
  * Простая
@@ -122,14 +125,13 @@ fun whichRookThreatens(kingX: Int, kingY: Int,
  */
 fun rookOrBishopThreatens(kingX: Int, kingY: Int,
                           rookX: Int, rookY: Int,
-                          bishopX: Int, bishopY: Int): Int {
-     return when {
+                          bishopX: Int, bishopY: Int): Int =
+         when {
          ((kingX == rookX) || (kingY == rookY)) && (abs (kingX - bishopX) == (abs(kingY - bishopY))) -> 3
          ((kingX == rookX) || (kingY == rookY)) && (abs (kingX - bishopX) != (abs(kingY - bishopY))) -> 1
          ((kingX != rookX) && (kingY != rookY)) && (abs (kingX - bishopX) == (abs(kingY - bishopY))) -> 2
          else -> 0
      }
- }
 
 /**
  * Простая
@@ -139,17 +141,7 @@ fun rookOrBishopThreatens(kingX: Int, kingY: Int,
  * прямоугольным (вернуть 1) или тупоугольным (вернуть 2).
  * Если такой треугольник не существует, вернуть -1.
  */
-fun triangleKind(a: Double, b: Double, c: Double): Int {
-    if ((a > b + c) || (b > a + c) || (c > a + b)) return -1
-    else return when {
-        ((maxOf(a, b, c) == a) && (sqr(a) == sqr(b) + sqr(c)) || (maxOf(a, b, c) == b) && (sqr(b) == sqr(a) + sqr(c)) ||
-                (maxOf(a, b, c) == c) && (sqr(c) == sqr(b) + sqr(a))) -> 1
-        ((maxOf(a, b, c) == a) && (sqr(a) > sqr(b) + sqr(c)) || (maxOf(a, b, c) == b) && (sqr(b) > sqr(a) + sqr(c)) ||
-                (maxOf(a, b, c) == c) && (sqr(c) > sqr(b) + sqr(a))) -> 2
-        else -> 0
-    }
-}
-
+fun triangleKind(a: Double, b: Double, c: Double): Int = TODO()
 /**
  * Средняя
  *
@@ -159,10 +151,12 @@ fun triangleKind(a: Double, b: Double, c: Double): Int {
  * Если пересечения нет, вернуть -1.
  */
 fun segmentLength(a: Int, b: Int, c: Int, d: Int): Int {
-    if ((c>a) && (c<b) && (b<d)) return b-c
-    else if ((c>a)  && (b>d)) return d-c
-    else if ((c<a)&& (b<d)) return b-a
-    else if ((c<a)&& (b>d) &&(d>a)) return d-a
-    else if ((b==c)||(a==d)) return 0
-    else return -1
+   return when {
+        (c >= a) && (c <= b) && (b <= d) -> b - c
+        (c >= a) && (b >= d) -> d - c
+        (c <= a) && (b <= d) -> b - a
+        (c <= a) && (b >= d) && (d >= a) -> d - a
+        (b == c) || (a == d) -> 0
+        else -> -1
+    }
 }
