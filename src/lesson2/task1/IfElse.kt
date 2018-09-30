@@ -125,14 +125,18 @@ fun whichRookThreatens(kingX: Int, kingY: Int,
  */
 fun rookOrBishopThreatens(kingX: Int, kingY: Int,
                           rookX: Int, rookY: Int,
-                          bishopX: Int, bishopY: Int): Int =
-         when {
-         ((kingX == rookX) || (kingY == rookY)) && (abs (kingX - bishopX) == (abs(kingY - bishopY))) -> 3
-         ((kingX == rookX) || (kingY == rookY)) && (abs (kingX - bishopX) != (abs(kingY - bishopY))) -> 1
-         ((kingX != rookX) && (kingY != rookY)) && (abs (kingX - bishopX) == (abs(kingY - bishopY))) -> 2
+                          bishopX: Int, bishopY: Int): Int {
+     fun rook(kingX: Int, kingY: Int,
+              rookX: Int, rookY: Int): Boolean =
+         ((kingX == rookX) || (kingY == rookY))
+
+     return when {
+         (rook( kingX, kingY, rookX, rookY) && (abs(kingX - bishopX) == (abs(kingY - bishopY)))) -> 3
+         (rook( kingX, kingY, rookX, rookY)) && (abs(kingX - bishopX) != (abs(kingY - bishopY))) -> 1
+         (rook(kingX, kingY, rookX, rookY) == false) && (abs(kingX - bishopX) == (abs(kingY - bishopY))) -> 2
          else -> 0
      }
-
+ }
 /**
  * Простая
  *
@@ -141,7 +145,23 @@ fun rookOrBishopThreatens(kingX: Int, kingY: Int,
  * прямоугольным (вернуть 1) или тупоугольным (вернуть 2).
  * Если такой треугольник не существует, вернуть -1.
  */
-fun triangleKind(a: Double, b: Double, c: Double): Int = TODO()
+fun triangleKind(a: Double, b: Double, c: Double): Int {
+   fun midOf(a: Double, b: Double, c: Double): Double {
+       val max = maxOf(a, b, c)
+       val min = minOf(a, b, c)
+       return when {
+           (a != max) && (a != min) -> a
+           (b != max) && (b != min) -> b
+           else -> c
+       }
+   }
+    return if (maxOf(a,b,c) > midOf(a,b,c) + minOf(a,b,c)) -1
+    else return when {
+    sqr(maxOf(a,b,c)) > sqr(midOf(a,b,c)) + sqr(minOf(a,b,c)) -> 2
+        sqr(maxOf(a,b,c)) == sqr(midOf(a,b,c)) + sqr(minOf(a,b,c)) -> 1
+        else -> 0
+    }
+    }
 /**
  * Средняя
  *
@@ -152,10 +172,10 @@ fun triangleKind(a: Double, b: Double, c: Double): Int = TODO()
  */
 fun segmentLength(a: Int, b: Int, c: Int, d: Int): Int {
    return when {
-        (c >= a) && (c <= b) && (b <= d) -> b - c
-        (c >= a) && (b >= d) -> d - c
-        (c <= a) && (b <= d) -> b - a
-        (c <= a) && (b >= d) && (d >= a) -> d - a
+       (minOf(a,c) == a) && (minOf(b,c) == c) && (maxOf(b,d) == d) -> b - c
+       (minOf(a,c) == a) && (maxOf(b,d) == b) -> d - c
+       (minOf(a,c) == c) && (maxOf(b,d) == d) -> b - a
+       (minOf(a,c) == c) && (minOf(a,d) == a) && (maxOf(b,d) == b) -> d - a
         (b == c) || (a == d) -> 0
         else -> -1
     }

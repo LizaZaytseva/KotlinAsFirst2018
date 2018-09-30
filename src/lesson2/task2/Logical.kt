@@ -2,6 +2,7 @@
 package lesson2.task2
 
 import lesson1.task1.sqr
+import lesson1.task1.trackLength
 import java.lang.Math.abs
 import java.lang.Math.sqrt
 
@@ -22,7 +23,7 @@ fun pointInsideCircle(x: Double, y: Double, x0: Double, y0: Double, r: Double) =
 fun isNumberHappy(number: Int): Boolean {
     val n = number / 1000 + number % 1000 / 100
     val m = number % 10 + number % 100 / 10
-    return (m==n)
+    return m==n
 }
 
 
@@ -60,7 +61,7 @@ fun daysInMonth(month: Int, year: Int): Int {
  * Вернуть true, если утверждение верно
  */
 fun circleInside(x1: Double, y1: Double, r1: Double,
-                 x2: Double, y2: Double, r2: Double): Boolean = (r2 >= r1 + sqrt(sqr(x2 - x1) + sqr(y2- y1)))
+                 x2: Double, y2: Double, r2: Double): Boolean = (r2 >= r1 + trackLength(x1, y1, x2, y2))
 
 /**
  * Средняя
@@ -72,6 +73,14 @@ fun circleInside(x1: Double, y1: Double, r1: Double,
  * Вернуть true, если кирпич пройдёт
  */
 fun brickPasses(a: Int, b: Int, c: Int, r: Int, s: Int): Boolean {
-    return ((((a <= r) && (b <= s)) || ((b <= r) && (a <= s ))) || (((a <= r) && (c <= s)) || ((c <= r) && (a <= s ))) ||
-                ((c <= r) && (b <= s)) || ((b <= r) && (c <= s )))
+    fun midOf(a: Int, b: Int, c: Int): Int {
+        val max = maxOf(a, b, c)
+        val min = minOf(a, b, c)
+        return when {
+            (a != max) && (a != min) -> a
+            (b != max) && (b != min) -> b
+            else -> c
+        }
+    }
+    return (minOf(a,b,c) <= minOf(r,s)) && (midOf(a,b,c) <= maxOf(r,s))
 }
