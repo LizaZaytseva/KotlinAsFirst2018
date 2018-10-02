@@ -74,7 +74,7 @@ fun digitNumber(n: Int): Int {
     var k = 0
     var l = n
     if (n == 0) return 1
-    while (l > 0) {
+    while (abs(l) > 0) {
         k++
         l /= 10
     }
@@ -142,7 +142,7 @@ fun maxDivisor(n: Int): Int {
  * Например, 25 и 49 взаимно простые, а 6 и 8 -- нет.
  */
 fun isCoPrime(m: Int, n: Int): Boolean =
-        (minDivisor(m) != minDivisor(n)) && ((maxOf(m,n) % minOf(m,n)) != 0)
+        ((minDivisor(m) != minDivisor(n)) && ((maxOf(m,n) % minOf(m,n)) != 0)) || (minOf(m,n) == 1)
 /**
  * Простая
  *
@@ -269,7 +269,23 @@ fun revert(n: Int): Int {
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun isPalindrome(n: Int): Boolean = TODO()
+fun isPalindrome(n: Int): Boolean {
+    var k = 0
+    var x = n
+    var m = 0.0
+    while (x >= 1) {
+        x /= 10
+        k++
+    }
+    x = n
+    var a : Double
+    for (i in k downTo 1) {
+        a = (x % 10) * pow(10.0, (i - 1.0))
+        m += a
+        x /= 10
+    }
+    return n == m.toInt()
+}
 
 /**
  * Средняя

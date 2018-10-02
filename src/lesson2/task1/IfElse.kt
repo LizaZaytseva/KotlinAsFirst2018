@@ -105,14 +105,18 @@ fun timeForHalfWay(t1: Double, v1: Double,
  */
 fun whichRookThreatens(kingX: Int, kingY: Int,
                        rookX1: Int, rookY1: Int,
-                       rookX2: Int, rookY2: Int): Int =
-    when {
-       (kingX != rookX1) && (kingY != rookY1) && (kingX != rookX2) && (kingY != rookY2) -> 0
-       (((kingX == rookX1) || (kingY == rookY1)) && ((kingX == rookX2) || (kingY == rookY2))) -> 3
-        (kingX == rookX1) || (kingY == rookY1) -> 1
+                       rookX2: Int, rookY2: Int): Int {
+    fun rook(kingX: Int, kingY: Int,
+             rookX: Int, rookY: Int): Boolean =
+            ((kingX == rookX) || (kingY == rookY))
+
+    return when {
+        (rook(kingX, kingY, rookX1, rookY1) == false) && (rook(kingX, kingY, rookX2, rookY2) == false) -> 0
+        rook(kingX, kingY, rookX1, rookY1) && rook(kingX, kingY, rookX2, rookY2) -> 3
+        rook(kingX, kingY, rookX1, rookY1) -> 1
         else -> 2
     }
-
+}
  /**
  * Простая
  *
@@ -131,8 +135,8 @@ fun rookOrBishopThreatens(kingX: Int, kingY: Int,
          ((kingX == rookX) || (kingY == rookY))
 
      return when {
-         (rook( kingX, kingY, rookX, rookY) && (abs(kingX - bishopX) == (abs(kingY - bishopY)))) -> 3
-         (rook( kingX, kingY, rookX, rookY)) && (abs(kingX - bishopX) != (abs(kingY - bishopY))) -> 1
+         (rook(kingX, kingY, rookX, rookY) && (abs(kingX - bishopX) == (abs(kingY - bishopY)))) -> 3
+         (rook(kingX, kingY, rookX, rookY)) && (abs(kingX - bishopX) != (abs(kingY - bishopY))) -> 1
          (rook(kingX, kingY, rookX, rookY) == false) && (abs(kingX - bishopX) == (abs(kingY - bishopY))) -> 2
          else -> 0
      }
@@ -146,22 +150,16 @@ fun rookOrBishopThreatens(kingX: Int, kingY: Int,
  * Если такой треугольник не существует, вернуть -1.
  */
 fun triangleKind(a: Double, b: Double, c: Double): Int {
-   fun midOf(a: Double, b: Double, c: Double): Double {
-       val max = maxOf(a, b, c)
-       val min = minOf(a, b, c)
-       return when {
-           (a != max) && (a != min) -> a
-           (b != max) && (b != min) -> b
-           else -> c
-       }
-   }
-    return if (maxOf(a,b,c) > midOf(a,b,c) + minOf(a,b,c)) -1
-    else return when {
-    sqr(maxOf(a,b,c)) > sqr(midOf(a,b,c)) + sqr(minOf(a,b,c)) -> 2
-        sqr(maxOf(a,b,c)) == sqr(midOf(a,b,c)) + sqr(minOf(a,b,c)) -> 1
-        else -> 0
-    }
-    }
+    val max = maxOf(a, b, c)
+    if (2 * max > (a + b + c)) {
+        val res = 2 * max * max - a * a - b * b - c * c
+        return when {
+            res < 0 -> 0
+            res > 0 -> 2
+            else -> 1
+        }
+    } else return -1
+}
 /**
  * Средняя
  *
@@ -170,8 +168,8 @@ fun triangleKind(a: Double, b: Double, c: Double): Int {
  * Найти длину пересечения отрезков AB и CD.
  * Если пересечения нет, вернуть -1.
  */
-fun segmentLength(a: Int, b: Int, c: Int, d: Int): Int {
-   return when {
+fun segmentLength(a: Int, b: Int, c: Int, d: Int): Int =
+   when {
        (minOf(a,c) == a) && (minOf(b,c) == c) && (maxOf(b,d) == d) -> b - c
        (minOf(a,c) == a) && (maxOf(b,d) == b) -> d - c
        (minOf(a,c) == c) && (maxOf(b,d) == d) -> b - a
@@ -179,4 +177,3 @@ fun segmentLength(a: Int, b: Int, c: Int, d: Int): Int {
         (b == c) || (a == d) -> 0
         else -> -1
     }
-}

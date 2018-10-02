@@ -23,7 +23,7 @@ fun pointInsideCircle(x: Double, y: Double, x0: Double, y0: Double, r: Double) =
 fun isNumberHappy(number: Int): Boolean {
     val n = number / 1000 + number % 1000 / 100
     val m = number % 10 + number % 100 / 10
-    return m==n
+    return m == n
 }
 
 
