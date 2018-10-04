@@ -102,17 +102,11 @@ fun fib(n: Int): Int {
 }
 
 fun Evk(a: Int, b: Int): Int {
-    var c = 0
-    var m = a
-    var n = b
-    while (n > 0) {
-        m %= b
-        c = m
-        m = n
-        n = c
+        if (b == 0)
+            return a
+        else
+            return Evk(b, a % b)
     }
-    return a
-}
 /**
  * Простая
  *
@@ -161,6 +155,7 @@ fun isCoPrime(m: Int, n: Int): Boolean =
  */
 fun squareBetweenExists(m: Int, n: Int): Boolean {
     var k = 0
+    if (m == 0) return true
     if (n == Int.MAX_VALUE) return false
     while ( sqr(k+1) <= n)  {
         k++
@@ -196,7 +191,7 @@ fun collatzSteps(x: Int): Int {
 }
 
 fun sinEl(y: Double, n: Int) : Double {
-    return  abs(pow(y, n * 1.0) /  factorial(n))
+    return  pow(y, n * 1.0) /  factorial(n)
 }
 /**
  * Средняя
@@ -214,7 +209,6 @@ fun sin(x: Double, eps: Double): Double {
         sin1 = sin2
         n += 2
         sin2 = sin1 + sinEl(x, n) * pow(-1.0,k)
-
         k++
     }
     return sin2
@@ -235,7 +229,7 @@ fun cos(x: Double, eps: Double): Double {
     var n = 0
     var cos1 = 0.0
     var cos2 = 1.0
-    var z = x % (2 * PI)
+    val z = x % (2 * PI)
     while (abs(cos2 - cos1) >= eps) {
         cos1 = cos2
         n += 2
@@ -279,7 +273,8 @@ fun revert(n: Int): Int {
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun isPalindrome(n: Int): Boolean = n == revert(n)
+fun isPalindrome(n: Int): Boolean =
+    n == revert(n)
 
 /**
  * Средняя
