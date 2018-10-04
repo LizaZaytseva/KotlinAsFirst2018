@@ -1,6 +1,7 @@
 @file:Suppress("UNUSED_PARAMETER")
 package lesson3.task1
 
+import lesson1.task1.discriminant
 import lesson1.task1.sqr
 import java.lang.Math.pow
 import kotlin.math.PI
@@ -100,17 +101,25 @@ fun fib(n: Int): Int {
     return h
 }
 
+fun Evk(a: Int, b: Int): Int {
+    var c = 0
+    var m = a
+    var n = b
+    while (n > 0) {
+        m %= b
+        c = m
+        m = n
+        n = c
+    }
+    return a
+}
 /**
  * Простая
  *
  * Для заданных чисел m и n найти наименьшее общее кратное, то есть,
  * минимальное число k, которое делится и на m и на n без остатка
  */
-fun lcm(m: Int, n: Int): Int {
-    var k = 1
-    while (((k % m) != 0) || ((k % n) != 0)) k++
-        return k
-}
+fun lcm(m: Int, n: Int): Int = (m * n) / Evk(m, n)
 
 /**
  * Простая
@@ -142,7 +151,7 @@ fun maxDivisor(n: Int): Int {
  * Например, 25 и 49 взаимно простые, а 6 и 8 -- нет.
  */
 fun isCoPrime(m: Int, n: Int): Boolean =
-        ((minDivisor(m) != minDivisor(n)) && ((maxOf(m,n) % minOf(m,n)) != 0)) || (minOf(m,n) == 1)
+        maxOf(m,n) % minDivisor((minOf(m, n))) != 0
 /**
  * Простая
  *
@@ -151,12 +160,12 @@ fun isCoPrime(m: Int, n: Int): Boolean =
  * Например, для интервала 21..28 21 <= 5*5 <= 28, а для интервала 51..61 квадрата не существует.
  */
 fun squareBetweenExists(m: Int, n: Int): Boolean {
-    var k = 1
+    var k = 0
     if (n == Int.MAX_VALUE) return false
     while ( sqr(k+1) <= n)  {
         k++
     }
-     return (sqr(k)  >= m )
+     return (sqr(k) >= m )
     }
 
 /**
@@ -186,6 +195,9 @@ fun collatzSteps(x: Int): Int {
     return k
 }
 
+fun sinEl(y: Double, n: Int) : Double {
+    return  abs(pow(y, n * 1.0) /  factorial(n))
+}
 /**
  * Средняя
  *
@@ -194,9 +206,6 @@ fun collatzSteps(x: Int): Int {
  * Нужную точность считать достигнутой, если очередной член ряда меньше eps по модулю
  */
 fun sin(x: Double, eps: Double): Double {
-    fun SinEl(y: Double, n: Int) : Double {
-      return  pow(y, n * 1.0) /  factorial(n)
-    }
     var k = 1.0
     var n = 1
     var sin1 = 0.0
@@ -204,7 +213,8 @@ fun sin(x: Double, eps: Double): Double {
     while (abs(sin2 - sin1) >= eps) {
         sin1 = sin2
         n += 2
-        sin2 = sin1 + SinEl(x, n) * pow(-1.0,k)
+        sin2 = sin1 + sinEl(x, n) * pow(-1.0,k)
+
         k++
     }
     return sin2
@@ -269,23 +279,7 @@ fun revert(n: Int): Int {
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun isPalindrome(n: Int): Boolean {
-    var k = 0
-    var x = n
-    var m = 0.0
-    while (x >= 1) {
-        x /= 10
-        k++
-    }
-    x = n
-    var a : Double
-    for (i in k downTo 1) {
-        a = (x % 10) * pow(10.0, (i - 1.0))
-        m += a
-        x /= 10
-    }
-    return n == m.toInt()
-}
+fun isPalindrome(n: Int): Boolean = revert(n) == n
 
 /**
  * Средняя
@@ -325,7 +319,6 @@ return false
  * Использовать операции со строками в этой задаче запрещается.
  */
 fun squareSequenceDigit(n: Int): Int = TODO()
-
 /**
  * Сложная
  *

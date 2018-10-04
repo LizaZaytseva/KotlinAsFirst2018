@@ -94,6 +94,11 @@ fun timeForHalfWay(t1: Double, v1: Double,
         else -> t1 + t2 + (s - s1 - s2) / v3
     }
 }
+
+fun rook(kingX: Int, kingY: Int,
+         rookX: Int, rookY: Int): Boolean =
+        ((kingX == rookX) || (kingY == rookY))
+
 /**
  * Простая
  *
@@ -106,12 +111,8 @@ fun timeForHalfWay(t1: Double, v1: Double,
 fun whichRookThreatens(kingX: Int, kingY: Int,
                        rookX1: Int, rookY1: Int,
                        rookX2: Int, rookY2: Int): Int {
-    fun rook(kingX: Int, kingY: Int,
-             rookX: Int, rookY: Int): Boolean =
-            ((kingX == rookX) || (kingY == rookY))
-
     return when {
-        (rook(kingX, kingY, rookX1, rookY1) == false) && (rook(kingX, kingY, rookX2, rookY2) == false) -> 0
+        !rook(kingX, kingY, rookX1, rookY1) && !rook(kingX, kingY, rookX2, rookY2) -> 0
         rook(kingX, kingY, rookX1, rookY1) && rook(kingX, kingY, rookX2, rookY2) -> 3
         rook(kingX, kingY, rookX1, rookY1) -> 1
         else -> 2
@@ -129,18 +130,14 @@ fun whichRookThreatens(kingX: Int, kingY: Int,
  */
 fun rookOrBishopThreatens(kingX: Int, kingY: Int,
                           rookX: Int, rookY: Int,
-                          bishopX: Int, bishopY: Int): Int {
-     fun rook(kingX: Int, kingY: Int,
-              rookX: Int, rookY: Int): Boolean =
-         ((kingX == rookX) || (kingY == rookY))
-
-     return when {
+                          bishopX: Int, bishopY: Int): Int =
+      when {
          (rook(kingX, kingY, rookX, rookY) && (abs(kingX - bishopX) == (abs(kingY - bishopY)))) -> 3
          (rook(kingX, kingY, rookX, rookY)) && (abs(kingX - bishopX) != (abs(kingY - bishopY))) -> 1
-         (rook(kingX, kingY, rookX, rookY) == false) && (abs(kingX - bishopX) == (abs(kingY - bishopY))) -> 2
+         !rook(kingX, kingY, rookX, rookY) && (abs(kingX - bishopX) == (abs(kingY - bishopY))) -> 2
          else -> 0
      }
- }
+
 /**
  * Простая
  *
@@ -151,7 +148,7 @@ fun rookOrBishopThreatens(kingX: Int, kingY: Int,
  */
 fun triangleKind(a: Double, b: Double, c: Double): Int {
     val max = maxOf(a, b, c)
-    if (2 * max > (a + b + c)) {
+    if (2 * max < (a + b + c)) {
         val res = 2 * max * max - a * a - b * b - c * c
         return when {
             res < 0 -> 0

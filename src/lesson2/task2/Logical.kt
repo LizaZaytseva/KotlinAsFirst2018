@@ -46,11 +46,11 @@ fun queenThreatens(x1: Int, y1: Int, x2: Int, y2: Int): Boolean =
  */
 fun daysInMonth(month: Int, year: Int): Int {
     return when {
-    month == 4 || month == 6 || month == 9 || month == 11 -> 30
-    month == 1 || month == 3 || month == 5 || month == 7 || month == 8 || month == 10 || month == 12 -> 31
-    (((year % 400) == 0) || ((year % 4) == 0) && ((year % 100) != 0)) && (month == 2) -> 29
-    else -> 28
-}
+        month == 4 || month == 6 || month == 9 || month == 11 -> 30
+        month == 1 || month == 3 || month == 5 || month == 7 || month == 8 || month == 10 || month == 12 -> 31
+        (((year % 400) == 0) || ((year % 4) == 0) && ((year % 100) != 0)) && (month == 2) -> 29
+        else -> 28
+    }
 }
 
 /**
@@ -73,14 +73,9 @@ fun circleInside(x1: Double, y1: Double, r1: Double,
  * Вернуть true, если кирпич пройдёт
  */
 fun brickPasses(a: Int, b: Int, c: Int, r: Int, s: Int): Boolean {
-    fun midOf(a: Int, b: Int, c: Int): Int {
-        val max = maxOf(a, b, c)
-        val min = minOf(a, b, c)
-        return when {
-            (a != max) && (a != min) -> a
-            (b != max) && (b != min) -> b
-            else -> c
-        }
-    }
-    return (minOf(a,b,c) <= minOf(r,s)) && (midOf(a,b,c) <= maxOf(r,s))
+    var midOf = 0
+    if ((maxOf(a, b, c) == a) && (minOf(a, b, c) == b)) midOf = c
+    else if ((maxOf(a, b, c) == a) && (minOf(a, b, c) == c)) midOf = b
+    else midOf = a
+    return (minOf(a, b, c) <= minOf(r, s)) && (midOf <= maxOf(r, s))
 }
