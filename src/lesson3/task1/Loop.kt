@@ -101,11 +101,11 @@ fun fib(n: Int): Int {
     return h
 }
 
-fun Evk(a: Int, b: Int): Int {
+fun evk(a: Int, b: Int): Int {
         if (b == 0)
             return a
         else
-            return Evk(b, a % b)
+            return evk(b, a % b)
     }
 /**
  * Простая
@@ -113,7 +113,7 @@ fun Evk(a: Int, b: Int): Int {
  * Для заданных чисел m и n найти наименьшее общее кратное, то есть,
  * минимальное число k, которое делится и на m и на n без остатка
  */
-fun lcm(m: Int, n: Int): Int = (m * n) / Evk(m, n)
+fun lcm(m: Int, n: Int): Int = (m * n) / evk(m, n)
 
 /**
  * Простая
@@ -145,7 +145,7 @@ fun maxDivisor(n: Int): Int {
  * Например, 25 и 49 взаимно простые, а 6 и 8 -- нет.
  */
 fun isCoPrime(m: Int, n: Int): Boolean =
-        maxOf(m,n) % minDivisor((minOf(m, n))) != 0
+        (lcm(m, n) == m * n)
 /**
  * Простая
  *
@@ -154,13 +154,11 @@ fun isCoPrime(m: Int, n: Int): Boolean =
  * Например, для интервала 21..28 21 <= 5*5 <= 28, а для интервала 51..61 квадрата не существует.
  */
 fun squareBetweenExists(m: Int, n: Int): Boolean {
-    var k = 0
-    if (m == 0) return true
-    if (n == Int.MAX_VALUE) return false
-    while ( sqr(k+1) <= n)  {
-        k++
-    }
-     return (sqr(k) >= m )
+    if (n ==  Int.MAX_VALUE) return false
+     val k = sqrt(m * 1.0).toInt()
+    return if (k * k == m) true
+    else if (sqr(k + 1) <= n) true
+    else false
     }
 
 /**
@@ -203,15 +201,18 @@ fun sinEl(y: Double, n: Int) : Double {
 fun sin(x: Double, eps: Double): Double {
     var k = 1.0
     var n = 1
+    var l = 0
     var sin1 = 0.0
-    var sin2 = x % (2 * PI)
+    var sin2 = abs(x % (2 * PI))
+    if (x < 0) l++
     while (abs(sin2 - sin1) >= eps) {
         sin1 = sin2
         n += 2
-        sin2 = sin1 + sinEl(x, n) * pow(-1.0,k)
+        sin2 = sin1 + sinEl(x, n) * pow(-1.0, k)
         k++
     }
-    return sin2
+    if (l > 0) return sin2 * -1
+    else return sin2
 }
 
 /**
@@ -247,21 +248,14 @@ fun cos(x: Double, eps: Double): Double {
  * Использовать операции со строками в этой задаче запрещается.
  */
 fun revert(n: Int): Int {
-    var k = 0
     var x = n
-    var m = 0.0
-    while (x >= 1) {
-        x /= 10
-        k++
-    }
     x = n
-    var a : Double
-    for (i in k downTo 1) {
-        a = (x % 10) * pow(10.0, (i - 1.0))
-        m += a
+    var a = 0
+    for (i in 1..digitNumber(n)) {
+        a = a * 10 + x % 10
         x /= 10
     }
-    return m.toInt()
+    return a
 }
 
 /**
@@ -297,13 +291,12 @@ fun hasDifferentDigits(n: Int): Boolean {
     var b = x % 10
     for (i in k downTo 2) {
         a = x  / 10 % 10
-         if (a != b) return true
+        if (a != b) return true
         b = a
         x /= 10
     }
-return false
+    return false
 }
-
 /**
  * Сложная
  *

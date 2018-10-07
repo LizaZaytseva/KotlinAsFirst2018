@@ -110,14 +110,13 @@ fun rook(kingX: Int, kingY: Int,
  */
 fun whichRookThreatens(kingX: Int, kingY: Int,
                        rookX1: Int, rookY1: Int,
-                       rookX2: Int, rookY2: Int): Int {
-    return when {
+                       rookX2: Int, rookY2: Int): Int =
+        when {
         !rook(kingX, kingY, rookX1, rookY1) && !rook(kingX, kingY, rookX2, rookY2) -> 0
         rook(kingX, kingY, rookX1, rookY1) && rook(kingX, kingY, rookX2, rookY2) -> 3
         rook(kingX, kingY, rookX1, rookY1) -> 1
         else -> 2
     }
-}
  /**
  * Простая
  *

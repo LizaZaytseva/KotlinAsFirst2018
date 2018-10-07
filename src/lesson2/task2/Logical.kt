@@ -73,9 +73,5 @@ fun circleInside(x1: Double, y1: Double, r1: Double,
  * Вернуть true, если кирпич пройдёт
  */
 fun brickPasses(a: Int, b: Int, c: Int, r: Int, s: Int): Boolean {
-    var midOf = 0
-    if ((maxOf(a, b, c) == a) && (minOf(a, b, c) == b)) midOf = c
-    else if ((maxOf(a, b, c) == a) && (minOf(a, b, c) == c)) midOf = b
-    else midOf = a
-    return (minOf(a, b, c) <= minOf(r, s)) && (midOf <= maxOf(r, s))
+    return (minOf(a, b, c) <= minOf(r, s)) && (a + b + c - maxOf(a ,b, c) - minOf(a, b, c) <= maxOf(r, s))
 }
