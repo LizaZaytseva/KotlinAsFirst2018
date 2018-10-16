@@ -69,9 +69,7 @@ fun ageDescription(age: Int): String =
             "$age лет"
         else when (age % 10) {
             1 -> "$age год"
-            2 -> "$age года"
-            3 -> "$age года"
-            4 -> "$age года"
+            in 2..4 -> "$age года"
             else -> "$age лет"
         }
 
@@ -136,7 +134,6 @@ fun rookOrBishopThreatens(kingX: Int, kingY: Int,
          !rook(kingX, kingY, rookX, rookY) && (abs(kingX - bishopX) == (abs(kingY - bishopY))) -> 2
          else -> 0
      }
-
 /**
  * Простая
  *

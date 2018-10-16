@@ -358,7 +358,7 @@ fun negativeList(list: List<Int>) = list.filter { it < 0 }
 Это тоже __функция__, которая, однако, принимает в качестве параметра **другую функцию**.
 Более подробная запись вызова `filter` выглядела бы так:
 
-[source,kotlin]
+  [source,kotlin]
 ----
 fun negativeList(list: List<Int>) = list.filter(fun(it: Int) = it < 0)
 ----

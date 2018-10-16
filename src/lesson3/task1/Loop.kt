@@ -101,12 +101,11 @@ fun fib(n: Int): Int {
     return h
 }
 
-fun evk(a: Int, b: Int): Int {
+fun evk(a: Int, b: Int): Int =
         if (b == 0)
-            return a
+            a
         else
-            return evk(b, a % b)
-    }
+            evk(b, a % b)
 /**
  * Простая
  *
@@ -131,11 +130,7 @@ fun minDivisor(n: Int): Int {
  *
  * Для заданного числа n > 1 найти максимальный делитель, меньший n
  */
-fun maxDivisor(n: Int): Int {
-    var k = n - 1
-    while (n % k !=0) k--
-    return k
-}
+fun maxDivisor(n: Int): Int = n / minDivisor(n)
 
 /**
  * Простая
@@ -154,11 +149,8 @@ fun isCoPrime(m: Int, n: Int): Boolean =
  * Например, для интервала 21..28 21 <= 5*5 <= 28, а для интервала 51..61 квадрата не существует.
  */
 fun squareBetweenExists(m: Int, n: Int): Boolean {
-    if (n ==  Int.MAX_VALUE) return false
      val k = sqrt(m * 1.0).toInt()
-    return if (k * k == m) true
-    else if (sqr(k + 1) <= n) true
-    else false
+    return  (k * k == m) || (sqr(k + 1) <= n)
     }
 
 /**
@@ -198,23 +190,7 @@ fun sinEl(y: Double, n: Int) : Double {
  * sin(x) = x - x^3 / 3! + x^5 / 5! - x^7 / 7! + ...
  * Нужную точность считать достигнутой, если очередной член ряда меньше eps по модулю
  */
-fun sin(x: Double, eps: Double): Double {
-    var k = 1.0
-    var n = 1
-    var l = 0
-    var sin1 = 0.0
-    var sin2 = abs(x % (2 * PI))
-    if (x < 0) l++
-    while (abs(sin2 - sin1) >= eps) {
-        sin1 = sin2
-        n += 2
-        sin2 = sin1 + sinEl(x, n) * pow(-1.0, k)
-        k++
-    }
-    if (l > 0) return sin2 * -1
-    else return sin2
-}
-
+fun sin(x: Double, eps: Double): Double = TODO()
 /**
  * Средняя
  *
@@ -278,24 +254,7 @@ fun isPalindrome(n: Int): Boolean =
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun hasDifferentDigits(n: Int): Boolean {
-    var k = 0
-    var x = n
-    while (x >= 1) {
-        x /= 10
-        k++
-    }
-    if (k == 1) return false
-    x = n
-    var a = 0
-    var b = x % 10
-    for (i in k downTo 2) {
-        a = x  / 10 % 10
-        if (a != b) return true
-        b = a
-        x /= 10
-    }
-    return false
+fun hasDifferentDigits(n: Int): Boolean = TODO()
 }
 /**
  * Сложная
