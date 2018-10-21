@@ -114,7 +114,7 @@ fun whichRookThreatens(kingX: Int, kingY: Int,
         rook(kingX, kingY, rookX1, rookY1) && rook(kingX, kingY, rookX2, rookY2) -> 3
         rook(kingX, kingY, rookX1, rookY1) -> 1
         else -> 2
-    }
+        }
  /**
  * Простая
  *

@@ -141,6 +141,8 @@ fun maxDivisor(n: Int): Int = n / minDivisor(n)
  */
 fun isCoPrime(m: Int, n: Int): Boolean =
         (lcm(m, n) == m * n)
+
+fun isSqrOfInt(n: Int): Boolean = (sqrt(n.toDouble()) - sqrt(n.toDouble()).toInt() * 1.0 == 0.0)
 /**
  * Простая
  *
@@ -148,10 +150,7 @@ fun isCoPrime(m: Int, n: Int): Boolean =
  * то есть, существует ли такое целое k, что m <= k*k <= n.
  * Например, для интервала 21..28 21 <= 5*5 <= 28, а для интервала 51..61 квадрата не существует.
  */
-fun squareBetweenExists(m: Int, n: Int): Boolean {
-     val k = sqrt(m * 1.0).toInt()
-    return  (k * k == m) || (sqr(k + 1) <= n)
-    }
+fun squareBetweenExists(m: Int, n: Int): Boolean = (sqrt(n.toDouble()).toInt() - sqrt(m.toDouble()).toInt() >= 1) || isSqrOfInt(m) || isSqrOfInt(m)
 
 /**
  * Средняя
@@ -191,6 +190,9 @@ fun sinEl(y: Double, n: Int) : Double {
  * Нужную точность считать достигнутой, если очередной член ряда меньше eps по модулю
  */
 fun sin(x: Double, eps: Double): Double = TODO()
+
+fun cosEl(y: Double, n: Int) : Double = pow(y, n * 1.0) /  factorial(n)
+
 /**
  * Средняя
  *
@@ -199,9 +201,6 @@ fun sin(x: Double, eps: Double): Double = TODO()
  * Нужную точность считать достигнутой, если очередной член ряда меньше eps по модулю
  */
 fun cos(x: Double, eps: Double): Double {
-    fun CosEl(y: Double, n: Int) : Double {
-        return  pow(y, n * 1.0) /  factorial(n)
-    }
     var k = 1.0
     var n = 0
     var cos1 = 0.0
@@ -210,7 +209,7 @@ fun cos(x: Double, eps: Double): Double {
     while (abs(cos2 - cos1) >= eps) {
         cos1 = cos2
         n += 2
-        cos2 = cos1 + CosEl(z , n) * pow(-1.0,k)
+        cos2 = cos1 + cosEl(z , n) * pow(-1.0,k)
         k++
     }
     return cos2
@@ -254,7 +253,16 @@ fun isPalindrome(n: Int): Boolean =
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun hasDifferentDigits(n: Int): Boolean = TODO()
+fun hasDifferentDigits(n: Int): Boolean {
+    val k = n % 10
+    var x = n
+    while(x >= 1){
+        if (x % 10 != k) return true
+    else x /= 10}
+    return false
+}
+
+fun digitInNumber(n: Int, m: Int) : Int = ((n / pow(10.0, (digitNumber(n) - m).toDouble()).toInt()) % 10)
 /**
  * Сложная
  *
@@ -264,7 +272,16 @@ fun hasDifferentDigits(n: Int): Boolean = TODO()
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun squareSequenceDigit(n: Int): Int = TODO()
+fun squareSequenceDigit(n: Int): Int {
+    var k = 0
+    var x = 0
+   while (x < n) {
+       x += digitNumber(sqr(k + 1))
+       k += 1
+   }
+    return if (x == n) sqr(k) % 10
+    else (digitInNumber(sqr(k), digitNumber(sqr(k)) - (x - n)))
+}
 /**
  * Сложная
  *

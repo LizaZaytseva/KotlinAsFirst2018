@@ -119,13 +119,7 @@ fun buildSumExample(list: List<Int>) = list.joinToString(separator = " + ", post
  * по формуле abs = sqrt(a1^2 + a2^2 + ... + aN^2).
  * Модуль пустого вектора считать равным 0.0.
  */
-fun abs(v: List<Double>): Double {
-    var a = 0.0
-    for (i in 0 until v.size)  {
-        a += sqr(v[i])
-    }
-    return sqrt(a)
-}
+fun abs(v: List<Double>): Double = sqrt(v.map{ sqr(it) }.sum())
 
 /**
  * Простая
@@ -196,15 +190,12 @@ fun polynom(p: List<Double>, x: Double): Double {
  */
 fun accumulate(list: MutableList<Double>): MutableList<Double> {
     var s = 0.0
-    if (list.size == 0) return list
-    else {
         for (i in 0 until list.size) {
             s += list[i]
             list[i] = s
         }
         return list
     }
-}
 /**
  * Средняя
  *
@@ -259,7 +250,6 @@ fun convert(n: Int, base: Int): List<Int> {
  * Например: n = 100, base = 4 -> 1210, n = 250, base = 14 -> 13c
  */
 fun convertToString(n: Int, base: Int): String = TODO()
-
 /**
  * Средняя
  *
