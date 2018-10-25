@@ -1,4 +1,4 @@
-= 5. Ассоциативные массивы aka Maps и множества aka Sets
+ = 5. Ассоциативные массивы aka Maps и множества aka Sets
 
 == Введение
 
@@ -233,7 +233,7 @@ fun filterByCountryCode(
         countryCode: String) {
     for ((name, phone) in phoneBook) {
         if (!phone.startsWith(countryCode)) {
-            phoneBook.remove(name)
+             phoneBook.remove(name)
         }
     }
 }
