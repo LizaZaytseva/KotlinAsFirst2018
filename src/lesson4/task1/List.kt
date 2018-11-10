@@ -126,7 +126,9 @@ fun abs(v: List<Double>): Double = sqrt(v.map{ sqr(it) }.sum())
  *
  * Рассчитать среднее арифметическое элементов списка list. Вернуть 0.0, если список пуст
  */
-fun mean(list: List<Double>): Double = if (list.isNotEmpty()) list.sum() / list.size
+fun mean(list: List<Double>): Double = if (list.isNotEmpty()) {
+    list.sum() / list.size
+}
     else 0.0
 
 /**
@@ -139,9 +141,7 @@ fun mean(list: List<Double>): Double = if (list.isNotEmpty()) list.sum() / list.
  */
 fun center(list: MutableList<Double>): MutableList<Double> {
      val k = mean(list)
-    for (i in 0 until list.size) {
-        list[i] = list[i] - k
-    }
+    for (i in 0 until list.size) list[i] = list[i] - k
     return list
 }
 /**
@@ -204,9 +204,11 @@ fun factorize(n: Int): List<Int> {
     var x = n
     var k = 2
     val result = mutableListOf<Int>()
-    while(x != 1) {
-        if(x % k == 0) {result.add(k)
-        x /= k}
+    while (x != 1) {
+        if (x % k == 0) {
+            result.add(k)
+            x /= k
+        }
         else k++
     }
     return result
@@ -233,7 +235,7 @@ fun convert(n: Int, base: Int): List<Int> {
     val result = mutableListOf<Int>()
     var x = n
     if (x == 0) result.add(0)
-    while(x > 0) {
+    while (x > 0) {
         result.add(0, x % base)
         x /= base
     }
