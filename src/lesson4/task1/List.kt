@@ -186,10 +186,10 @@ fun polynom(p: List<Double>, x: Double): Double {
  */
 fun accumulate(list: MutableList<Double>): MutableList<Double> {
     var s = 0.0
-        for (i in 0 until list.size) {
-            s += list[i]
-            list[i] = s
-        }
+    for (i in 0 until list.size) {
+        s += list[i]
+        list[i] = s
+    }
     return list
 }
 /**

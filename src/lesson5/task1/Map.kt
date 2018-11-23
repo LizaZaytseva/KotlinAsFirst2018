@@ -97,13 +97,10 @@ fun buildWordSet(text: List<String>): MutableSet<String> {
  *   ) -> mapOf("Emergency" to "112, 911", "Police" to "02")
  */
 fun mergePhoneBooks(mapA: Map<String, String>, mapB: Map<String, String>): Map<String, String> {
-    val result = mutableMapOf<String, String>()
-    for ((name, number) in mapA) {
-        result.getOrPut(name) { number }
-    }
+    val result = mapA.toMutableMap()
     for ((name, number) in mapB) {
-        if (result.contains(name) && (result[name] != mapB[name])) result[name] = result[name] + ", " + mapB[name]
-        else result.getOrPut(name) { number }
+        if (mapA.containsKey(name) && (mapA[name] != number)) result[name] = "${mapA[name]}, $number"
+        else result[name] = number
     }
     return result
 }
@@ -118,17 +115,8 @@ fun mergePhoneBooks(mapA: Map<String, String>, mapB: Map<String, String>): Map<S
  *   buildGrades(mapOf("Марат" to 3, "Семён" to 5, "Михаил" to 5))
  *     -> mapOf(5 to listOf("Семён", "Михаил"), 3 to listOf("Марат"))
  */
-fun buildGrades(grades: Map<String, Int>): Map<Int, List<String>> {
-    val students = mutableMapOf<Int, MutableList<String>>()
-    val result = mutableMapOf<Int, List<String>>()
-    for ((name, grade) in grades) {
-        students.getOrPut(grade) { mutableListOf() }.add(name)
-        }
-    for ((grade, name) in students) {
-        result.getOrPut(grade) { name }
-    }
-    return result
-}
+fun buildGrades(grades: Map<String, Int>): Map<Int, List<String>> = grades.toList().groupBy({it.second}, {it.first})
+
 /**
  * Простая
  *
@@ -140,11 +128,10 @@ fun buildGrades(grades: Map<String, Int>): Map<Int, List<String>> {
  *   containsIn(mapOf("a" to "z"), mapOf("a" to "zee", "b" to "sweet")) -> false
  */
 fun containsIn(a: Map<String, String>, b: Map<String, String>): Boolean {
-    var k = 0
     for ((n, m) in a) {
-        if (a[n] == b[n]) k++
+        if (m != b[n]) return false
     }
-    return (k == a.size)
+    return true
 }
 /**
  * Средняя
@@ -158,12 +145,9 @@ fun containsIn(a: Map<String, String>, b: Map<String, String>): Boolean {
  */
 fun averageStockPrice(stockPrices: List<Pair<String, Double>>): Map<String, Double> {
     val result = mutableMapOf<String, Double>()
-    val prices = mutableMapOf<String, MutableList<Double>>()
-    for ((stock, price) in stockPrices) {
-        prices.getOrPut(stock) { mutableListOf() }.add(price)
-    }
+    val prices = stockPrices.toList().groupBy ({ it.first }, { it.second })
         for ((stock, price) in prices) {
-      result.getOrPut(stock) { mean(price) }
+      result.put(stock, mean(price))
     }
     return result
 }
@@ -184,23 +168,12 @@ fun averageStockPrice(stockPrices: List<Pair<String, Double>>): Map<String, Doub
  *   ) -> "Мария"
  */
 fun findCheapestStuff(stuff: Map<String, Pair<String, Double>>, kind: String): String? {
-    val b = mutableMapOf<String, Double>()
-    var min = 0.0
-    val result = mutableListOf<String>()
+    val result = mutableListOf<Pair<String, Double>>()
     for ((name, inf) in stuff) {
-        if (inf.first == kind)
-                b.getOrPut(name) { inf.second }
+        if (inf.first == kind) result.add(name to(inf.second))
     }
-    for ((name, price) in b) {
-        min = price
-    }
-    for ((name, price) in b) {
-        if (price <= min) {
-            result.add(name)
-            min = price
-        }
-    }
-        return if (result.isNotEmpty()) result.last() else null
+    val x = result.minBy{it.second}
+    return if (x != null ) x.first else null
     }
 
 
@@ -246,7 +219,7 @@ fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<Stri
  */
 fun subtractOf(a: MutableMap<String, String>, b: Map<String, String>): Unit {
     for ((str1, str2) in b) {
-        if (b[str1] == a[str1]) a.remove(str1)
+        a.remove(str1, str2)
     }
 }
 
@@ -255,7 +228,7 @@ fun subtractOf(a: MutableMap<String, String>, b: Map<String, String>): Unit {
  *
  * Для двух списков людей найти людей, встречающихся в обоих списках
  */
-fun whoAreInBoth(a: List<String>, b: List<String>): List<String> = (a.toSet().intersect(b.toSet())).toList()
+fun whoAreInBoth(a: List<String>, b: List<String>): List<String> = (a.intersect(b)).toList()
 
 /**
  * Средняя
@@ -266,13 +239,7 @@ fun whoAreInBoth(a: List<String>, b: List<String>): List<String> = (a.toSet().in
  * Например:
  *   canBuildFrom(listOf('a', 'b', 'o'), "baobab") -> true
  */
-fun canBuildFrom(chars: List<Char>, word: String): Boolean {
-    var k = 0
-    for (element in chars) {
-        if (element in word.toSet()) k++
-    }
-    return ((k == chars.size) && chars.isNotEmpty())
-}
+fun canBuildFrom(chars: List<Char>, word: String): Boolean = chars.map{ it.toLowerCase()}.containsAll(word.toLowerCase().toSet())
 
 /**
  * Средняя
@@ -286,7 +253,7 @@ fun canBuildFrom(chars: List<Char>, word: String): Boolean {
  * Например:
  *   extractRepeats(listOf("a", "b", "a")) -> mapOf("a" to 2)
  */
-fun extractRepeats(list: List<String>): Map<String, Int> = list.groupingBy{it}.eachCount().filterValues { it > 1 }
+fun extractRepeats(list: List<String>): Map<String, Int> = list.groupingBy{ it }.eachCount().filterValues { it > 1 }
 
 /**
  * Средняя
@@ -297,14 +264,8 @@ fun extractRepeats(list: List<String>): Map<String, Int> = list.groupingBy{it}.e
  * Например:
  *   hasAnagrams(listOf("тор", "свет", "рот")) -> true
  */
-fun hasAnagrams(words: List<String>): Boolean {
-    val list =  mutableListOf<List<Char>>()
-    for (element in words) {
-        if (element.toList().sorted() in list) return true
-        else list.add(element.toList().sorted())
-    }
-    return false
-}
+fun hasAnagrams(words: List<String>): Boolean = words.groupingBy{ it.toList().sorted().toSet() }.eachCount().filterValues { it > 1 }.isNotEmpty()
+
 
 /**
  * Сложная
@@ -323,7 +284,7 @@ fun hasAnagrams(words: List<String>): Boolean {
  *   findSumOfTwo(listOf(1, 2, 3), 4) -> Pair(0, 2)
  *   findSumOfTwo(listOf(1, 2, 3), 6) -> Pair(-1, -1)
  */
-fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> = TODO()
+fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> =TODO()
 
 /**
  * Очень сложная
