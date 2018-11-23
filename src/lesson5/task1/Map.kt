@@ -115,7 +115,7 @@ fun mergePhoneBooks(mapA: Map<String, String>, mapB: Map<String, String>): Map<S
  *   buildGrades(mapOf("Марат" to 3, "Семён" to 5, "Михаил" to 5))
  *     -> mapOf(5 to listOf("Семён", "Михаил"), 3 to listOf("Марат"))
  */
-fun buildGrades(grades: Map<String, Int>): Map<Int, List<String>> = grades.toList().groupBy({it.second}, {it.first})
+fun buildGrades(grades: Map<String, Int>): Map<Int, List<String>> = grades.toList().groupBy({ it.second }, { it.first })
 
 /**
  * Простая
@@ -145,9 +145,9 @@ fun containsIn(a: Map<String, String>, b: Map<String, String>): Boolean {
  */
 fun averageStockPrice(stockPrices: List<Pair<String, Double>>): Map<String, Double> {
     val result = mutableMapOf<String, Double>()
-    val prices = stockPrices.toList().groupBy ({ it.first }, { it.second })
-        for ((stock, price) in prices) {
-      result.put(stock, mean(price))
+    val prices = stockPrices.toList().groupBy({ it.first }, { it.second })
+    for ((stock, price) in prices) {
+      result[stock] = mean(price)
     }
     return result
 }
@@ -170,10 +170,10 @@ fun averageStockPrice(stockPrices: List<Pair<String, Double>>): Map<String, Doub
 fun findCheapestStuff(stuff: Map<String, Pair<String, Double>>, kind: String): String? {
     val result = mutableListOf<Pair<String, Double>>()
     for ((name, inf) in stuff) {
-        if (inf.first == kind) result.add(name to(inf.second))
+        if (inf.first == kind) result.add(name to (inf.second))
     }
-    val x = result.minBy{it.second}
-    return if (x != null ) x.first else null
+    val x = result.minBy{ it.second }
+    return x?.first
     }
 
 
@@ -228,7 +228,7 @@ fun subtractOf(a: MutableMap<String, String>, b: Map<String, String>): Unit {
  *
  * Для двух списков людей найти людей, встречающихся в обоих списках
  */
-fun whoAreInBoth(a: List<String>, b: List<String>): List<String> = (a.intersect(b)).toList()
+fun whoAreInBoth(a: List<String>, b: List<String>): List<String> = a.intersect(b).toList()
 
 /**
  * Средняя
@@ -239,7 +239,7 @@ fun whoAreInBoth(a: List<String>, b: List<String>): List<String> = (a.intersect(
  * Например:
  *   canBuildFrom(listOf('a', 'b', 'o'), "baobab") -> true
  */
-fun canBuildFrom(chars: List<Char>, word: String): Boolean = chars.map{ it.toLowerCase()}.containsAll(word.toLowerCase().toSet())
+fun canBuildFrom(chars: List<Char>, word: String): Boolean = chars.map{ it.toLowerCase() }.toSet().containsAll(word.toLowerCase().toSet())
 
 /**
  * Средняя
@@ -253,7 +253,7 @@ fun canBuildFrom(chars: List<Char>, word: String): Boolean = chars.map{ it.toLow
  * Например:
  *   extractRepeats(listOf("a", "b", "a")) -> mapOf("a" to 2)
  */
-fun extractRepeats(list: List<String>): Map<String, Int> = list.groupingBy{ it }.eachCount().filterValues { it > 1 }
+fun extractRepeats(list: List<String>): Map<String, Int> = list.groupingBy { it }.eachCount().filterValues { it > 1 }
 
 /**
  * Средняя
@@ -264,7 +264,7 @@ fun extractRepeats(list: List<String>): Map<String, Int> = list.groupingBy{ it }
  * Например:
  *   hasAnagrams(listOf("тор", "свет", "рот")) -> true
  */
-fun hasAnagrams(words: List<String>): Boolean = words.groupingBy{ it.toList().sorted().toSet() }.eachCount().filterValues { it > 1 }.isNotEmpty()
+fun hasAnagrams(words: List<String>): Boolean = words.groupingBy{ it.toSet().toList().sorted() }.eachCount().filterValues { it > 1 }.isNotEmpty()
 
 
 /**
