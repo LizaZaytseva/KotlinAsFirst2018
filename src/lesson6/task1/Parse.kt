@@ -61,7 +61,7 @@ fun main(args: Array<String>) {
     }
 }
 
-
+val months = listOf<String>("января", "февраля", "марта", "апреля", "мая", "июня", "июля", "августа", "сентября", "октября", "ноября", "декабря")
 /**
  * Средняя
  *
@@ -74,11 +74,10 @@ fun main(args: Array<String>) {
  * входными данными.
  */
 fun dateStrToDigit(str: String): String {
-    if(!Regex ( "\\d{1,2} [а-я]+ \\d+").matches(str)) return ""
+    if(!Regex("""(\d{1,2}) ([а-я]+) (\d+)""").matches(str)) return ""
     val res = str.split(" ")
     val date = res.first().toInt()
     val year = res.last().toInt()
-    val months = listOf<String>("января", "февраля", "марта", "апреля", "мая", "июня", "июля", "августа", "сентября", "октября", "ноября", "декабря")
     val month = months.indexOf(res[1]) + 1
     if (month == 0) return ""
     if (date !in 1..daysInMonth(month, year)) return ""
@@ -96,12 +95,11 @@ fun dateStrToDigit(str: String): String {
  * входными данными.
  */
 fun dateDigitToStr(digital: String): String {
-    if (!Regex("\\d{1,2}.\\d{2}.\\d+").matches(digital)) return ""
+    if (!Regex("""((\d{1,2}).(\d{2}).(\d+))""").matches(digital)) return ""
     val res = digital.split(".")
     val date = res.first().toInt()
     val year = res.last().toInt()
     if ((res[1].toInt() > 12) || (res[1].toInt() < 1)) return ""
-    val months = listOf<String>("января", "февраля", "марта", "апреля", "мая", "июня", "июля", "августа", "сентября", "октября", "ноября", "декабря")
     val month = months[res[1].toInt() - 1]
     if (date !in 1..daysInMonth(res[1].toInt(), year)) {
         return ""
@@ -122,7 +120,7 @@ fun dateDigitToStr(digital: String): String {
  * При неверном формате вернуть пустую строку
  */
 fun flattenPhoneNumber(phone: String): String =
-    if (!Regex("""[\d+()\s-]+""").matches(phone)) ""
+    if (!Regex("""((\+\d+)?)([\s-]*)((\({1}\d+\){1})?)([\s-]*)([\d\s-]+)""").matches(phone)) ""
     else Regex("""[()\s-]+""").replace(phone, "")
 
 /**
@@ -137,10 +135,11 @@ fun flattenPhoneNumber(phone: String): String =
  */
 fun bestLongJump(jumps: String): Int {
     val res = mutableListOf<Int>()
-    if(!Regex("(?=.*\\d)([\\d\\s%-]+)").matches(jumps)) return -1
-    val x = Regex("""[-%]+""").replace(jumps, "")
-    for (element in x.split(Regex("""[\s]+"""))) res.add(element.toInt())
-    return res.max()!!
+    for (element in jumps.split(Regex("""[\s]"""))) {
+        if (Regex("\\d+").matches(element)) res.add(element.toInt())
+        if (!Regex("""[%\d-]+""").matches(element)) return -1
+    }
+    return if (res.isEmpty()) -1 else res.max()!!
 }
 
 /**

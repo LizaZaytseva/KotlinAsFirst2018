@@ -3,6 +3,7 @@
 package lesson5.task1
 
 import lesson4.task1.mean
+import java.lang.Math.pow
 
 /**
  * Пример
@@ -147,7 +148,7 @@ fun averageStockPrice(stockPrices: List<Pair<String, Double>>): Map<String, Doub
     val result = mutableMapOf<String, Double>()
     val prices = stockPrices.toList().groupBy({ it.first }, { it.second })
     for ((stock, price) in prices) {
-      result[stock] = mean(price)
+        result[stock] = mean(price)
     }
     return result
 }
@@ -168,13 +169,16 @@ fun averageStockPrice(stockPrices: List<Pair<String, Double>>): Map<String, Doub
  *   ) -> "Мария"
  */
 fun findCheapestStuff(stuff: Map<String, Pair<String, Double>>, kind: String): String? {
-    val result = mutableListOf<Pair<String, Double>>()
+    var min = 1.7 * pow(10.0, 308.0)
+    var result = ""
     for ((name, inf) in stuff) {
-        if (inf.first == kind) result.add(name to (inf.second))
+        if ((inf.first == kind) && (inf.second < min)) {
+            min = inf.second
+            result = name
+        }
     }
-    val x = result.minBy{ it.second }
-    return x?.first
-    }
+    return if (result.isEmpty()) null else result
+}
 
 
 /**
@@ -239,7 +243,8 @@ fun whoAreInBoth(a: List<String>, b: List<String>): List<String> = a.intersect(b
  * Например:
  *   canBuildFrom(listOf('a', 'b', 'o'), "baobab") -> true
  */
-fun canBuildFrom(chars: List<Char>, word: String): Boolean = chars.map{ it.toLowerCase() }.toSet().containsAll(word.toLowerCase().toSet())
+fun canBuildFrom(chars: List<Char>, word: String): Boolean =
+        chars.map { it.toLowerCase() }.toSet().containsAll(word.toLowerCase().toSet())
 
 /**
  * Средняя
@@ -264,7 +269,7 @@ fun extractRepeats(list: List<String>): Map<String, Int> = list.groupingBy { it 
  * Например:
  *   hasAnagrams(listOf("тор", "свет", "рот")) -> true
  */
-fun hasAnagrams(words: List<String>): Boolean = words.groupingBy{ it.toSet().toList().sorted() }.eachCount().filterValues { it > 1 }.isNotEmpty()
+fun hasAnagrams(words: List<String>): Boolean = words.groupingBy{ it.toSet() }.eachCount().filterValues { it > 1 }.isNotEmpty()
 
 
 /**
@@ -278,13 +283,22 @@ fun hasAnagrams(words: List<String>): Boolean = words.groupingBy{ it.toSet().toL
  * Индексы в результате должны следовать в порядке (меньший, больший).
  *
  * Постарайтесь сделать ваше решение как можно более эффективным,
- * используя то, что вы узнали в данном уроке.
+ * используя то, что вы узнали в данном урок  е.
  *
  * Например:
  *   findSumOfTwo(listOf(1, 2, 3), 4) -> Pair(0, 2)
  *   findSumOfTwo(listOf(1, 2, 3), 6) -> Pair(-1, -1)
  */
-fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> =TODO()
+fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
+    val res = mutableMapOf<Int, Int>()
+    for (element in list) {
+        res[element] = number - element
+    }
+    for ((k, x) in res) {
+        if ((res.contains(x)) && (k != x)) return (list.indexOf(k) to (list.indexOf(x)))
+    }
+    return (-1 to(-1))
+}
 
 /**
  * Очень сложная
@@ -306,3 +320,6 @@ fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> =TODO()
  *   ) -> emptySet()
  */
 fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<String> = TODO()
+
+
+
