@@ -3,6 +3,7 @@
 package lesson6.task1
 
 import lesson2.task2.daysInMonth
+import kotlin.math.min
 
 /**
  * Пример
@@ -74,11 +75,12 @@ val months = listOf<String>("января", "февраля", "марта", "а�
  * входными данными.
  */
 fun dateStrToDigit(str: String): String {
-    if(!Regex("""(\d{1,2}) ([а-я]+) (\d+)""").matches(str)) return ""
-    val res = str.split(" ")
-    val date = res.first().toInt()
-    val year = res.last().toInt()
-    val month = months.indexOf(res[1]) + 1
+    val x = Regex("""(\d{1,2}) ([а-я]+) (\d+)""").find(str)
+    if (x == null) return ""
+        val res = x.groupValues.drop(1)
+        val date = res[0].toInt()
+        val year = res[2].toInt()
+        val month = months.indexOf(res[1]) + 1
     if (month == 0) return ""
     if (date !in 1..daysInMonth(month, year)) return ""
     return String.format("%02d.%02d.%d", date, month, year)
@@ -95,13 +97,16 @@ fun dateStrToDigit(str: String): String {
  * входными данными.
  */
 fun dateDigitToStr(digital: String): String {
-    if (!Regex("""((\d{1,2}).(\d{2}).(\d+))""").matches(digital)) return ""
-    val res = digital.split(".")
-    val date = res.first().toInt()
-    val year = res.last().toInt()
-    if ((res[1].toInt() > 12) || (res[1].toInt() < 1)) return ""
-    val month = months[res[1].toInt() - 1]
-    if (date !in 1..daysInMonth(res[1].toInt(), year)) {
+    if (!Regex("""(\d{1,2}).(\d{2}).(\d+)""").matches(digital)) return ""
+    val x = Regex("""(\d{1,2}).(\d{2}).(\d+)""").find(digital)
+    if (x == null) return ""
+    val res = x.groupValues
+    val date = res[1].toInt()
+    val year = res[3].toInt()
+    val numOfM = res[2].toInt()
+    if ((numOfM > 12) || (numOfM < 1)) return ""
+    val month = months[numOfM - 1]
+    if (date !in 1..daysInMonth(numOfM, year)) {
         return ""
     }
     return String.format("%d %s %d", date, month, year)
@@ -120,8 +125,8 @@ fun dateDigitToStr(digital: String): String {
  * При неверном формате вернуть пустую строку
  */
 fun flattenPhoneNumber(phone: String): String =
-    if (!Regex("""((\+\d+)?)([\s-]*)((\({1}\d+\){1})?)([\s-]*)([\d\s-]+)""").matches(phone)) ""
-    else Regex("""[()\s-]+""").replace(phone, "")
+        if (!Regex("""((\+\d+)?)((\({1}\d+\){1})?)(\d+)""").matches(Regex("""[\s-]*""").replace(phone, ""))) ""
+        else Regex("""[\(\)\s\-]*""").replace(phone, "")
 
 /**
  * Средняя
@@ -139,7 +144,7 @@ fun bestLongJump(jumps: String): Int {
         if (Regex("\\d+").matches(element)) res.add(element.toInt())
         if (!Regex("""[%\d-]+""").matches(element)) return -1
     }
-    return if (res.isEmpty()) -1 else res.max()!!
+    return res.max() ?: -1
 }
 
 /**
@@ -152,7 +157,15 @@ fun bestLongJump(jumps: String): Int {
  * Прочитать строку и вернуть максимальную взятую высоту (230 в примере).
  * При нарушении формата входной строки вернуть -1.
  */
-fun bestHighJump(jumps: String): Int = TODO()
+fun bestHighJump(jumps: String): Int {
+    if(!Regex("""(\d+\s[+%-]+\s?)+""").matches(jumps)) return -1
+    val res = mutableListOf<Int>()
+    val x = Regex("""(\d+\s[+%-]+)""").findAll(jumps)
+    for(element in x.map {  Regex("""[%\s-]+""").replace(it.value,"") }){
+        if (Regex("""\d+\+""").matches(element)) res.add(element.replace((Regex("""\+""")), "").toInt())
+    }
+    return res.max()?: -1
+}
 
 /**
  * Сложная
@@ -174,7 +187,15 @@ fun plusMinus(expression: String): Int = TODO()
  * Вернуть индекс начала первого повторяющегося слова, или -1, если повторов нет.
  * Пример: "Он пошёл в в школу" => результат 9 (индекс первого 'в')
  */
-fun firstDuplicateIndex(str: String): Int = TODO()
+fun firstDuplicateIndex(str: String): Int  {
+    var st = Regex("""[а-я, А-Я]+""").find(str)!!.value.toLowerCase()
+    var a = -1
+    for (element in str.split(Regex("\\s")).drop(1)){
+        if (element.toLowerCase() == st.toLowerCase()) a = (Regex("""$st\s$element""").find(str)!!.range.first)
+        else st = element
+    }
+    return a
+}
 
 /**
  * Сложная
@@ -187,7 +208,23 @@ fun firstDuplicateIndex(str: String): Int = TODO()
  * или пустую строку при нарушении формата строки.
  * Все цены должны быть больше либо равны нуля.
  */
-fun mostExpensive(description: String): String = TODO()
+fun mostExpensive(description: String): String {
+    var max = 0
+    val nameOfMax = mutableListOf<String>()
+    if (!Regex("""([а-я, А-Я]+\s\d+\.?\d*;?)+""").matches(description)) return ""
+    else {
+        val s = description.split(Regex(""";"""))
+        for (element in s) {
+            val price = Regex("""\d+""").find(element)!!.value.toInt()
+            val name = Regex("\\s+").replace(Regex("""[а-я, А-Я]+""").find(element)!!.value, "")
+            if(price  > max) {
+                max = price
+                nameOfMax.add(name)
+            }
+        }
+    }
+    return nameOfMax.last()
+}
 
 /**
  * Сложная
@@ -238,4 +275,69 @@ fun fromRoman(roman: String): Int = TODO()
  * IllegalArgumentException должен бросаться даже если ошибочная команда не была достигнута в ходе выполнения.
  *
  */
-fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> = TODO()
+fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> {
+    val res = mutableListOf<Int>()
+    var k = 0
+    var t = 0
+    var x = 1
+    var z =0
+    var p = 0
+    if (Regex("""[<>\+\s-\[\]]+""").matches(commands)) {
+        for (i in 0..commands.length-1) {
+            if (Regex("""\[""").matches(commands[i].toString())) k++
+            if (Regex("""\]""").matches(commands[i].toString())) k--
+        }
+        if (k != 0) throw  IllegalArgumentException(commands)
+        for (i in 0..cells-1) res.add(0)
+        var m = cells / 2
+        while ((t <= commands.length - 1) && (x <= limit)) {
+            if (Regex("""\+""").matches(commands[t].toString())) res[m]++
+            if (Regex("""-""").matches(commands[t].toString())) res[m]--
+            if (Regex(""">""").matches(commands[t].toString())) {
+                if (m != cells - 1){
+                    m++
+                } else throw IllegalStateException(commands)
+            }
+            if (Regex("""<""").matches(commands[t].toString())) {
+                if (m != 0){
+                    m--
+                } else throw IllegalStateException(commands)
+            }
+            if (Regex("""\[""").matches(commands[t].toString())) {
+                if (res[m] == 0)  {
+                    p = 1
+                    for ( i in t + 1 .. commands.length) {
+                        if (Regex("""\[""").matches(commands[i].toString())) p ++
+                        if ((Regex("""\]""").matches(commands[i].toString()))) {
+                            p --
+                            if (p == 0) {
+                                z = i + 1
+                                break
+                            }
+                        }
+                    }
+                    t = z - 1
+                }
+            }
+            if (Regex("""\]""").matches(commands[t].toString())) {
+                if (res[m] != 0) {
+                    p = -1
+                    for (i in t - 1 downTo 0) {
+                        if (Regex("""\]""").matches(commands[i].toString())) p --
+                        if ((Regex("""\[""").matches(commands[i].toString()))) {
+                            p++
+                            if (p == 0){
+                                z = i + 1
+                                break
+                            }
+                        }
+                    }
+                    t = z - 1
+                }
+            }
+            x++
+            t++
+        }
+    } else throw  IllegalArgumentException(commands)
+    return res
+}

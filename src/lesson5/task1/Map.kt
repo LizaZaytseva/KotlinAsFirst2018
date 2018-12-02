@@ -3,7 +3,10 @@
 package lesson5.task1
 
 import lesson4.task1.mean
+import java.lang.Math.max
 import java.lang.Math.pow
+import kotlin.math.max
+import kotlin.math.min
 
 /**
  * Пример
@@ -169,15 +172,17 @@ fun averageStockPrice(stockPrices: List<Pair<String, Double>>): Map<String, Doub
  *   ) -> "Мария"
  */
 fun findCheapestStuff(stuff: Map<String, Pair<String, Double>>, kind: String): String? {
-    var min = 1.7 * pow(10.0, 308.0)
+    var min = Double.MAX_VALUE
     var result = ""
+    var k = 0
     for ((name, inf) in stuff) {
-        if ((inf.first == kind) && (inf.second < min)) {
+        if ((inf.first == kind) && (inf.second <= min)) {
             min = inf.second
             result = name
+            k++
         }
     }
-    return if (result.isEmpty()) null else result
+    return if (k == 0) null else result
 }
 
 
@@ -269,7 +274,7 @@ fun extractRepeats(list: List<String>): Map<String, Int> = list.groupingBy { it 
  * Например:
  *   hasAnagrams(listOf("тор", "свет", "рот")) -> true
  */
-fun hasAnagrams(words: List<String>): Boolean = words.groupingBy{ it.toSet() }.eachCount().filterValues { it > 1 }.isNotEmpty()
+fun hasAnagrams(words: List<String>): Boolean = words.groupingBy{ it.toList().sorted() }.eachCount().filterValues { it > 1 }.isNotEmpty()
 
 
 /**
@@ -292,12 +297,16 @@ fun hasAnagrams(words: List<String>): Boolean = words.groupingBy{ it.toSet() }.e
 fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
     val res = mutableMapOf<Int, Int>()
     for (element in list) {
-        res[element] = number - element
+        res[element] = list.indexOf(element)
     }
     for ((k, x) in res) {
-        if ((res.contains(x)) && (k != x)) return (list.indexOf(k) to (list.indexOf(x)))
+        val m = number - k
+        if ((res.containsKey(m)) && (res[m] != x) && (m >= 0)) {
+            val l = res[m] ?: -1
+            return minOf(x, l) to maxOf(x, l)
+        }
     }
-    return (-1 to(-1))
+    return -1 to (-1)
 }
 
 /**
