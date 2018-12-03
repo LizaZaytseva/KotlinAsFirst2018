@@ -282,7 +282,7 @@ fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> {
     var x = 1
     var z =0
     var p = 0
-    if (Regex("""[<>\+\s-\[\]]+""").matches(commands)) {
+    if ((Regex("""[<>\+\s-\[\]]+""").matches(commands)) && (Regex("""<>\+-](\[.*\])*""").matches(commands))) {
         for (i in 0..commands.length-1) {
             if (Regex("""\[""").matches(commands[i].toString())) k++
             if (Regex("""\]""").matches(commands[i].toString())) k--

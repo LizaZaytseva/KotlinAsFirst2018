@@ -297,15 +297,10 @@ fun hasAnagrams(words: List<String>): Boolean = words.groupingBy{ it.toList().so
 fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
     val res = mutableMapOf<Int, Int>()
     for (element in list) {
-        res[element] = list.indexOf(element)
-    }
-    for ((k, x) in res) {
-        for ((m, n) in res) {
-            if ((k + m == number) && (x != n)) {
-                return minOf(x, n) to (maxOf(x, n))
-            }
+        val m = number - element
+        if (res.containsKey(m))  return res[m]!! to (list.indexOf(element))
+        else res[element] = list.indexOf(element)
         }
-    }
     return -1 to (-1)
 }
 
