@@ -300,10 +300,10 @@ fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
         res[element] = list.indexOf(element)
     }
     for ((k, x) in res) {
-        val m = number - k
-        if ((res.containsKey(m)) && (res[m] != x) && (m >= 0)) {
-            val l = res[m] ?: -1
-            return minOf(x, l) to maxOf(x, l)
+        for ((m, n) in res) {
+            if ((k + m == number) && (x != n)) {
+                return minOf(x, n) to (maxOf(x, n))
+            }
         }
     }
     return -1 to (-1)
