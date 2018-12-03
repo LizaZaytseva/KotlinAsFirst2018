@@ -103,7 +103,8 @@ fun buildWordSet(text: List<String>): MutableSet<String> {
 fun mergePhoneBooks(mapA: Map<String, String>, mapB: Map<String, String>): Map<String, String> {
     val result = mapA.toMutableMap()
     for ((name, number) in mapB) {
-        if (mapA.containsKey(name) && (mapA[name] != number)) result[name] = "${mapA[name]}, $number"
+        val x = result[name]
+        if (mapA.containsKey(name) && (x != number)) result[name] = "$x, $number"
         else result[name] = number
     }
     return result
@@ -174,15 +175,15 @@ fun averageStockPrice(stockPrices: List<Pair<String, Double>>): Map<String, Doub
 fun findCheapestStuff(stuff: Map<String, Pair<String, Double>>, kind: String): String? {
     var min = Double.MAX_VALUE
     var result = ""
-    var k = 0
+    var k = false
     for ((name, inf) in stuff) {
         if ((inf.first == kind) && (inf.second <= min)) {
             min = inf.second
             result = name
-            k++
+            k = true
         }
     }
-    return if (k == 0) null else result
+    return if (!k) null else result
 }
 
 
@@ -298,7 +299,7 @@ fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
     val res = mutableMapOf<Int, Int>()
     for (element in list) {
         val m = number - element
-        if (res.containsKey(m))  return res[m]!! to (list.indexOf(element))
+        if (res.containsKey(m)) return res[m]!! to (list.indexOf(element))
         else res[element] = list.indexOf(element)
         }
     return -1 to (-1)

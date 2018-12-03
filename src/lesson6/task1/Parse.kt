@@ -75,7 +75,7 @@ val months = listOf<String>("января", "февраля", "марта", "а�
  * входными данными.
  */
 fun dateStrToDigit(str: String): String {
-    val x = Regex("""(\d{1,2}) ([а-я]+) (\d+)""").find(str)
+    val x = Regex("""(\d{1,2}) ([а-я]+) (\d+)""").matchEntire(str)
     if (x == null) return ""
         val res = x.groupValues.drop(1)
         val date = res[0].toInt()
@@ -98,13 +98,13 @@ fun dateStrToDigit(str: String): String {
  */
 fun dateDigitToStr(digital: String): String {
     if (!Regex("""(\d{1,2}).(\d{2}).(\d+)""").matches(digital)) return ""
-    val x = Regex("""(\d{1,2}).(\d{2}).(\d+)""").find(digital)
+    val x = Regex("""(\d{1,2}).(\d{2}).(\d+)""").matchEntire(digital)
     if (x == null) return ""
     val res = x.groupValues
     val date = res[1].toInt()
     val year = res[3].toInt()
     val numOfM = res[2].toInt()
-    if ((numOfM > 12) || (numOfM < 1)) return ""
+    if (numOfM !in 1..12) return ""
     val month = months[numOfM - 1]
     if (date !in 1..daysInMonth(numOfM, year)) {
         return ""
@@ -140,9 +140,9 @@ fun flattenPhoneNumber(phone: String): String =
  */
 fun bestLongJump(jumps: String): Int {
     val res = mutableListOf<Int>()
-    for (element in jumps.split(Regex("""[\s]"""))) {
-        if (Regex("\\d+").matches(element)) res.add(element.toInt())
-        if (!Regex("""[%\d-]+""").matches(element)) return -1
+    for (element in jumps.split(Regex("""[\s]+"""))) {
+        if (Regex("""\d+""").matches(element)) res.add(element.toInt())
+        if (Regex("""[-%]{2,}|\d+[-%]+\d*+|[^-\d%]|\d*[-%]+\d+""").matches(element)) return -1
     }
     return res.max() ?: -1
 }
@@ -160,8 +160,8 @@ fun bestLongJump(jumps: String): Int {
 fun bestHighJump(jumps: String): Int {
     if(!Regex("""(\d+\s[+%-]+\s?)+""").matches(jumps)) return -1
     val res = mutableListOf<Int>()
-    val x = Regex("""(\d+\s[+%-]+)""").findAll(jumps)
-    for(element in x.map {  Regex("""[%\s-]+""").replace(it.value,"") }){
+    val x = jumps.split(Regex("""(?<=[\+&-])\s"""))
+    for(element in x.map {  Regex("""[%\s-]+""").replace(it,"") }){
         if (Regex("""\d+\+""").matches(element)) res.add(element.replace((Regex("""\+""")), "").toInt())
     }
     return res.max()?: -1
@@ -187,10 +187,10 @@ fun plusMinus(expression: String): Int = TODO()
  * Вернуть индекс начала первого повторяющегося слова, или -1, если повторов нет.
  * Пример: "Он пошёл в в школу" => результат 9 (индекс первого 'в')
  */
-fun firstDuplicateIndex(str: String): Int  {
-    var st = Regex("""[а-я, А-Я]+""").find(str)!!.value.toLowerCase()
+fun firstDuplicateIndex(str: String): Int {
+    var st = Regex("""[а-яА-ЯёЁ]+""").find(str)!!.value.toLowerCase()
     var a = -1
-    for (element in str.split(Regex("\\s")).drop(1)){
+    for (element in str.split(Regex("\\s")).drop(1)) {
         if (element.toLowerCase() == st.toLowerCase()) a = (Regex("""$st\s$element""").find(str)!!.range.first)
         else st = element
     }
@@ -211,7 +211,7 @@ fun firstDuplicateIndex(str: String): Int  {
 fun mostExpensive(description: String): String {
     var max = 0
     val nameOfMax = mutableListOf<String>()
-    if (!Regex("""([а-я, А-Я]+\s\d+\.?\d*;?)+""").matches(description)) return ""
+    if (!Regex("""(.+\s\d+\.?\d*;?)+""").matches(description)) return ""
     else {
         val s = description.split(Regex(""";"""))
         for (element in s) {
@@ -277,69 +277,70 @@ fun fromRoman(roman: String): Int = TODO()
  */
 fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> {
     val res = mutableListOf<Int>()
-    var k = 0
-    var t = 0
-    var x = 1
+    var numberOfBr = 0
+    var numOfCommand = 0
+    var numOfAction = 1
     var z =0
-    var p = 0
+    for (i in 0 until cells) res.add(0)
+    if (commands.isEmpty()) return res
     if ((Regex("""[<>\+\s-\[\]]+""").matches(commands)) && (Regex("""[<>\+\s-]*(\[.*\])*""").matches(commands))) {
-        for (i in 0..commands.length-1) {
-            if (Regex("""\[""").matches(commands[i].toString())) k++
-            if (Regex("""\]""").matches(commands[i].toString())) k--
-        }
-        if (k != 0) throw  IllegalArgumentException(commands)
-        for (i in 0..cells-1) res.add(0)
-        if (commands.isEmpty()) return res
-        else {
-            var m = cells / 2
-            while ((t <= commands.length - 1) && (x <= limit)) {
-                if (Regex("""\+""").matches(commands[t].toString())) res[m]++
-                if (Regex("""-""").matches(commands[t].toString())) res[m]--
-                if (Regex(""">""").matches(commands[t].toString())) {
-                    if (m != cells - 1) {
-                        m++
-                    } else throw IllegalStateException(commands)
-                }
-                if (Regex("""<""").matches(commands[t].toString())) {
-                    if (m != 0) {
-                        m--
-                    } else throw IllegalStateException(commands)
-                }
-                if (Regex("""\[""").matches(commands[t].toString())) {
-                    if (res[m] == 0) {
-                        p = 1
-                        for (i in t + 1..commands.length) {
-                            if (Regex("""\[""").matches(commands[i].toString())) p++
-                            if ((Regex("""\]""").matches(commands[i].toString()))) {
-                                p--
-                                if (p == 0) {
-                                    z = i + 1
-                                    break
-                                }
-                            }
-                        }
-                        t = z - 1
-                    }
-                }
-                if (Regex("""\]""").matches(commands[t].toString())) {
-                    if (res[m] != 0) {
-                        p = -1
-                        for (i in t - 1 downTo 0) {
-                            if (Regex("""\]""").matches(commands[i].toString())) p--
-                            if ((Regex("""\[""").matches(commands[i].toString()))) {
-                                p++
-                                if (p == 0) {
-                                    z = i + 1
-                                    break
-                                }
-                            }
-                        }
-                        t = z - 1
-                    }
-                }
-                x++
-                t++
+        for (i in 0 until commands.length) {
+            when (commands[i].toString()){
+            "[" -> numberOfBr++
+            "]" -> numberOfBr--
             }
+        }
+        if (numberOfBr != 0) throw  IllegalArgumentException(commands)
+            var m = cells / 2
+            while ((numOfCommand <= commands.length - 1) && (numOfAction <= limit)) {
+                when (commands[numOfCommand].toString()) {
+                    "+" -> res[m]++
+                    "-" -> res[m]--
+                    ">" -> {
+                        if (m != cells - 1) {
+                            m++
+                        } else throw IllegalStateException(commands)
+                    }
+                    "<" -> {
+                        if (m != 0) {
+                            m--
+                        } else throw IllegalStateException(commands)
+                    }
+                    "[" -> {
+                        if (res[m] == 0) {
+                            var p = 1
+                            for (i in numOfCommand + 1..commands.length) {
+                                if (Regex("""\[""").matches(commands[i].toString())) p++
+                                if ((Regex("""\]""").matches(commands[i].toString()))) {
+                                    p--
+                                    if (p == 0) {
+                                        z = i + 1
+                                        break
+                                    }
+                                }
+                            }
+                            numOfCommand = z - 1
+                        }
+                    }
+                    "]" -> {
+                        if (res[m] != 0) {
+                            var p = -1
+                            for (i in numOfCommand - 1 downTo 0) {
+                                if (Regex("""\]""").matches(commands[i].toString())) p--
+                                if ((Regex("""\[""").matches(commands[i].toString()))) {
+                                    p++
+                                    if (p == 0) {
+                                        z = i + 1
+                                        break
+                                    }
+                                }
+                            }
+                            numOfCommand = z - 1
+                        }
+                    }
+                }
+                numOfAction++
+                numOfCommand++
         }
     } else throw  IllegalArgumentException(commands)
     return res
