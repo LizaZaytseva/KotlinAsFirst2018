@@ -190,6 +190,7 @@ fun plusMinus(expression: String): Int = TODO()
 fun firstDuplicateIndex(str: String): Int {
     var st = Regex("""[а-яА-ЯёЁ]+""").find(str)!!.value.toLowerCase()
     var a = -1
+    if (str.isEmpty()) return -1
     for (element in str.split(Regex("\\s")).drop(1)) {
         if (element.toLowerCase() == st.toLowerCase()) a = (Regex("""$st\s$element""").find(str)!!.range.first)
         else st = element
@@ -209,13 +210,13 @@ fun firstDuplicateIndex(str: String): Int {
  * Все цены должны быть больше либо равны нуля.
  */
 fun mostExpensive(description: String): String {
-    var max = 0
+    var max = 0.0
     val nameOfMax = mutableListOf<String>()
     if (!Regex("""(.+\s\d+\.?\d*;?)+""").matches(description)) return ""
     else {
         val s = description.split(Regex(""";"""))
         for (element in s) {
-            val price = Regex("""\d+""").find(element)!!.value.toInt()
+            val price = Regex("""\d+""").find(element)!!.value.toDouble()
             val name = Regex("\\s+").replace(Regex("""[а-я, А-Я]+""").find(element)!!.value, "")
             if(price  > max) {
                 max = price
