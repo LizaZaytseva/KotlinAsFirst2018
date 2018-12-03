@@ -188,9 +188,9 @@ fun plusMinus(expression: String): Int = TODO()
  * Пример: "Он пошёл в в школу" => результат 9 (индекс первого 'в')
  */
 fun firstDuplicateIndex(str: String): Int {
+    if (str.isEmpty()) return -1
     var st = Regex("""[а-яА-ЯёЁ]+""").find(str)!!.value.toLowerCase()
     var a = -1
-    if (str.isEmpty()) return -1
     for (element in str.split(Regex("\\s")).drop(1)) {
         if (element.toLowerCase() == st.toLowerCase()) a = (Regex("""$st\s$element""").find(str)!!.range.first)
         else st = element
@@ -284,7 +284,7 @@ fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> {
     var z =0
     for (i in 0 until cells) res.add(0)
     if (commands.isEmpty()) return res
-    if ((Regex("""[<>\+\s-\[\]]+""").matches(commands)) && (Regex("""[<>\+\s-]*(\[.*\])*""").matches(commands))) {
+    if ((Regex("""[<>\+\s-\[\]]+""").matches(commands)) && (Regex("""[<>\+\s-]*(\[.*\])*[<>\+\s-]*""").matches(commands))) {
         for (i in 0 until commands.length) {
             when (commands[i].toString()){
             "[" -> numberOfBr++
