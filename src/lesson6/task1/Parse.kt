@@ -290,54 +290,56 @@ fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> {
         if (k != 0) throw  IllegalArgumentException(commands)
         for (i in 0..cells-1) res.add(0)
         if (commands.isEmpty()) return res
-        var m = cells / 2
-        while ((t <= commands.length - 1) && (x <= limit)) {
-            if (Regex("""\+""").matches(commands[t].toString())) res[m]++
-            if (Regex("""-""").matches(commands[t].toString())) res[m]--
-            if (Regex(""">""").matches(commands[t].toString())) {
-                if (m != cells - 1){
-                    m++
-                } else throw IllegalStateException(commands)
-            }
-            if (Regex("""<""").matches(commands[t].toString())) {
-                if (m != 0){
-                    m--
-                } else throw IllegalStateException(commands)
-            }
-            if (Regex("""\[""").matches(commands[t].toString())) {
-                if (res[m] == 0)  {
-                    p = 1
-                    for ( i in t + 1 .. commands.length) {
-                        if (Regex("""\[""").matches(commands[i].toString())) p ++
-                        if ((Regex("""\]""").matches(commands[i].toString()))) {
-                            p --
-                            if (p == 0) {
-                                z = i + 1
-                                break
+        else {
+            var m = cells / 2
+            while ((t <= commands.length - 1) && (x <= limit)) {
+                if (Regex("""\+""").matches(commands[t].toString())) res[m]++
+                if (Regex("""-""").matches(commands[t].toString())) res[m]--
+                if (Regex(""">""").matches(commands[t].toString())) {
+                    if (m != cells - 1) {
+                        m++
+                    } else throw IllegalStateException(commands)
+                }
+                if (Regex("""<""").matches(commands[t].toString())) {
+                    if (m != 0) {
+                        m--
+                    } else throw IllegalStateException(commands)
+                }
+                if (Regex("""\[""").matches(commands[t].toString())) {
+                    if (res[m] == 0) {
+                        p = 1
+                        for (i in t + 1..commands.length) {
+                            if (Regex("""\[""").matches(commands[i].toString())) p++
+                            if ((Regex("""\]""").matches(commands[i].toString()))) {
+                                p--
+                                if (p == 0) {
+                                    z = i + 1
+                                    break
+                                }
                             }
                         }
+                        t = z - 1
                     }
-                    t = z - 1
                 }
-            }
-            if (Regex("""\]""").matches(commands[t].toString())) {
-                if (res[m] != 0) {
-                    p = -1
-                    for (i in t - 1 downTo 0) {
-                        if (Regex("""\]""").matches(commands[i].toString())) p --
-                        if ((Regex("""\[""").matches(commands[i].toString()))) {
-                            p++
-                            if (p == 0){
-                                z = i + 1
-                                break
+                if (Regex("""\]""").matches(commands[t].toString())) {
+                    if (res[m] != 0) {
+                        p = -1
+                        for (i in t - 1 downTo 0) {
+                            if (Regex("""\]""").matches(commands[i].toString())) p--
+                            if ((Regex("""\[""").matches(commands[i].toString()))) {
+                                p++
+                                if (p == 0) {
+                                    z = i + 1
+                                    break
+                                }
                             }
                         }
+                        t = z - 1
                     }
-                    t = z - 1
                 }
+                x++
+                t++
             }
-            x++
-            t++
         }
     } else throw  IllegalArgumentException(commands)
     return res
