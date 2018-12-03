@@ -289,6 +289,7 @@ fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> {
         }
         if (k != 0) throw  IllegalArgumentException(commands)
         for (i in 0..cells-1) res.add(0)
+        if (commands.isEmpty()) return res
         var m = cells / 2
         while ((t <= commands.length - 1) && (x <= limit)) {
             if (Regex("""\+""").matches(commands[t].toString())) res[m]++
