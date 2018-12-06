@@ -104,7 +104,7 @@ fun mergePhoneBooks(mapA: Map<String, String>, mapB: Map<String, String>): Map<S
     val result = mapA.toMutableMap()
     for ((name, number) in mapB) {
         val x = result[name]
-        if (mapA.containsKey(name) && (x != number)) result[name] = "$x, $number"
+        if ((x != null) && (x != number)) result[name] = "$x, $number"
         else result[name] = number
     }
     return result
@@ -175,15 +175,15 @@ fun averageStockPrice(stockPrices: List<Pair<String, Double>>): Map<String, Doub
 fun findCheapestStuff(stuff: Map<String, Pair<String, Double>>, kind: String): String? {
     var min = Double.MAX_VALUE
     var result = ""
-    var k = false
+    var resIsNotEmpty = false
     for ((name, inf) in stuff) {
         if ((inf.first == kind) && (inf.second <= min)) {
             min = inf.second
             result = name
-            k = true
+            resIsNotEmpty = true
         }
     }
-    return if (!k) null else result
+    return if (!resIsNotEmpty) null else result
 }
 
 

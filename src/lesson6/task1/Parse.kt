@@ -77,10 +77,10 @@ val months = listOf<String>("января", "февраля", "марта", "а�
 fun dateStrToDigit(str: String): String {
     val x = Regex("""(\d{1,2}) ([а-я]+) (\d+)""").matchEntire(str)
     if (x == null) return ""
-        val res = x.groupValues.drop(1)
-        val date = res[0].toInt()
-        val year = res[2].toInt()
-        val month = months.indexOf(res[1]) + 1
+    val res = x.groupValues.drop(1)
+    val date = res[0].toInt()
+    val year = res[2].toInt()
+    val month = months.indexOf(res[1]) + 1
     if (month == 0) return ""
     if (date !in 1..daysInMonth(month, year)) return ""
     return String.format("%02d.%02d.%d", date, month, year)
@@ -97,7 +97,6 @@ fun dateStrToDigit(str: String): String {
  * входными данными.
  */
 fun dateDigitToStr(digital: String): String {
-    if (!Regex("""(\d{1,2}).(\d{2}).(\d+)""").matches(digital)) return ""
     val x = Regex("""(\d{1,2}).(\d{2}).(\d+)""").matchEntire(digital)
     if (x == null) return ""
     val res = x.groupValues
@@ -114,7 +113,7 @@ fun dateDigitToStr(digital: String): String {
 
 /**
  * Средняя
- *
+ * "MyString".matches(Regex("""..."""))
  * Номер телефона задан строкой вида "+7 (921) 123-45-67".
  * Префикс (+7) может отсутствовать, код города (в скобках) также может отсутствовать.
  * Может присутствовать неограниченное количество пробелов и чёрточек,
@@ -125,8 +124,8 @@ fun dateDigitToStr(digital: String): String {
  * При неверном формате вернуть пустую строку
  */
 fun flattenPhoneNumber(phone: String): String =
-        if (!Regex("""((\+\d+)?)((\({1}\d+\){1})?)(\d+)""").matches(Regex("""[\s-]*""").replace(phone, ""))) ""
-        else Regex("""[\(\)\s\-]*""").replace(phone, "")
+        if (!(Regex("""[\s-]*""").replace(phone, "")).matches(Regex("""((\+\d+)?)(\(\d+\)?)(\d+)"""))) ""
+        else phone.replace( Regex("""[\(\)\s\-]*"""), "")
 
 /**
  * Средняя
@@ -142,7 +141,7 @@ fun bestLongJump(jumps: String): Int {
     val res = mutableListOf<Int>()
     for (element in jumps.split(Regex("""[\s]+"""))) {
         if (Regex("""\d+""").matches(element)) res.add(element.toInt())
-        if (Regex("""[-%]{2,}|\d+[-%]+\d*+|[^-\d%]|\d*[-%]+\d+""").matches(element)) return -1
+        else if (element != "-" || element != "%") return -1
     }
     return res.max() ?: -1
 }
@@ -160,8 +159,8 @@ fun bestLongJump(jumps: String): Int {
 fun bestHighJump(jumps: String): Int {
     if(!Regex("""(\d+\s[+%-]+\s?)+""").matches(jumps)) return -1
     val res = mutableListOf<Int>()
-    val x = jumps.split(Regex("""(?<=[\+&-])\s"""))
-    for(element in x.map {  Regex("""[%\s-]+""").replace(it,"") }){
+    val x = jumps.split(Regex("""(?<=[+&-])\s"""))
+    for(element in x.map { Regex("""[%\s-]+""").replace(it,  "") }){
         if (Regex("""\d+\+""").matches(element)) res.add(element.replace((Regex("""\+""")), "").toInt())
     }
     return res.max()?: -1
@@ -189,7 +188,7 @@ fun plusMinus(expression: String): Int = TODO()
  */
 fun firstDuplicateIndex(str: String): Int {
     if (str.isEmpty()) return -1
-    var st = Regex("""[а-яА-ЯёЁ]+""").find(str)!!.value.toLowerCase()
+    var st = String()
     var a = -1
     for (element in str.split(Regex("\\s")).drop(1)) {
         if (element.toLowerCase() == st.toLowerCase()) a = (Regex("""$st\s$element""").find(str)!!.range.first)
@@ -212,13 +211,13 @@ fun firstDuplicateIndex(str: String): Int {
 fun mostExpensive(description: String): String {
     var max = 0.0
     val nameOfMax = mutableListOf<String>()
-    if (!Regex("""(.+\s\d+\.?\d*;?)+""").matches(description)) return ""
+    if (!Regex("""(.*\s\d+\.?\d*;?)+""").matches(description)) return ""
     else {
         val s = description.split(Regex(""";"""))
         for (element in s) {
             val price = Regex("""\d+""").find(element)!!.value.toDouble()
-            val name = Regex("\\s+").replace(Regex("""[а-я, А-Я]+""").find(element)!!.value, "")
-            if(price  > max) {
+            val name = Regex("\\s+").replace(Regex(""".*(?=\s)""").find(element)!!.value, "")
+            if(price > max) {
                 max = price
                 nameOfMax.add(name)
             }
@@ -311,8 +310,8 @@ fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> {
                         if (res[m] == 0) {
                             var p = 1
                             for (i in numOfCommand + 1..commands.length) {
-                                if (Regex("""\[""").matches(commands[i].toString())) p++
-                                if ((Regex("""\]""").matches(commands[i].toString()))) {
+                                if (commands[i].toString() == "[") p++
+                                if (commands[i].toString() == "]") {
                                     p--
                                     if (p == 0) {
                                         z = i + 1
@@ -327,8 +326,8 @@ fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> {
                         if (res[m] != 0) {
                             var p = -1
                             for (i in numOfCommand - 1 downTo 0) {
-                                if (Regex("""\]""").matches(commands[i].toString())) p--
-                                if ((Regex("""\[""").matches(commands[i].toString()))) {
+                                if (commands[i].toString() == "]") p--
+                                if (commands[i].toString() == "[") {
                                     p++
                                     if (p == 0) {
                                         z = i + 1
