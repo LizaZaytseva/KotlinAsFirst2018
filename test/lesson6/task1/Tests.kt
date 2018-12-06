@@ -18,7 +18,7 @@ class Tests {
     @Tag("Example")
     fun twoDigitStr() {
         assertEquals("00", twoDigitStr(0))
-        assertEquals("09", twoDigitStr(9))
+        assertEquals("09", twoDigitStr( 9))
         assertEquals("10", twoDigitStr(10))
         assertEquals("99", twoDigitStr(99))
     }
@@ -70,7 +70,7 @@ class Tests {
     fun bestLongJump() {
         assertEquals(717, bestLongJump("706 % - 717 - 703"))
         assertEquals(-1, bestLongJump("% - - % -"))
-        assertEquals(754, bestLongJump("700 717 707,0 % 754"))
+        assertEquals(754, bestLongJump("700 717 707 % 754"))
         assertEquals(-1, bestLongJump("700 + 700"))
 
     }

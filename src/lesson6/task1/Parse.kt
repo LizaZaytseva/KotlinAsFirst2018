@@ -124,8 +124,8 @@ fun dateDigitToStr(digital: String): String {
  * При неверном формате вернуть пустую строку
  */
 fun flattenPhoneNumber(phone: String): String =
-        if (!(Regex("""[\s-]*""").replace(phone, "")).matches(Regex("""((\+\d+)?)(\(\d+\)?)(\d+)"""))) ""
-        else phone.replace( Regex("""[\(\)\s\-]*"""), "")
+        if (!(Regex("""[\s-]*""").replace(phone, "")).matches(Regex("""(\+\d+)?(\(\d+\))?\d+"""))) ""
+        else Regex("""[\(\)\s\-]*""").replace(phone, "")
 
 /**
  * Средняя
@@ -140,8 +140,8 @@ fun flattenPhoneNumber(phone: String): String =
 fun bestLongJump(jumps: String): Int {
     val res = mutableListOf<Int>()
     for (element in jumps.split(Regex("""[\s]+"""))) {
-        if (Regex("""\d+""").matches(element)) res.add(element.toInt())
-        else if (element != "-" || element != "%") return -1
+        if (Regex("""\d+(,\d+)*""").matches(element)) res.add(element.toInt())
+        else if ((element != "-") && (element != "%")) return -1
     }
     return res.max() ?: -1
 }
