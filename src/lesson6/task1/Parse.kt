@@ -98,8 +98,7 @@ fun dateStrToDigit(str: String): String {
  */
 fun dateDigitToStr(digital: String): String {
     val x = Regex("""(\d{1,2}).(\d{2}).(\d+)""").matchEntire(digital)
-    if (x == null) return ""
-    val res = x.groupValues
+    val res = x!!.groupValues
     val date = res[1].toInt()
     val year = res[3].toInt()
     val numOfM = res[2].toInt()
@@ -140,7 +139,7 @@ fun flattenPhoneNumber(phone: String): String =
 fun bestLongJump(jumps: String): Int {
     val res = mutableListOf<Int>()
     for (element in jumps.split(Regex("""[\s]+"""))) {
-        if (Regex("""\d+(,\d+)*""").matches(element)) res.add(element.toInt())
+        if (Regex("""\d+""").matches(element)) res.add(element.toInt())
         else if ((element != "-") && (element != "%")) return -1
     }
     return res.max() ?: -1
@@ -157,11 +156,12 @@ fun bestLongJump(jumps: String): Int {
  * При нарушении формата входной строки вернуть -1.
  */
 fun bestHighJump(jumps: String): Int {
-    if(!Regex("""(\d+\s[+%-]+\s?)+""").matches(jumps)) return -1
     val res = mutableListOf<Int>()
     val x = jumps.split(Regex("""(?<=[+&-])\s"""))
-    for(element in x.map { Regex("""[%\s-]+""").replace(it,  "") }){
-        if (Regex("""\d+\+""").matches(element)) res.add(element.replace((Regex("""\+""")), "").toInt())
+    for(element in x){
+        if(!Regex("""\d+\s[+%-]+\s?""").matches(element)) return -1
+        if (Regex("""\d+\+""").matches(Regex("""[%\s-]+""").replace(element,  "")))
+                res.add(element.replace((Regex("""[\s%+-]""")), "").toInt())
     }
     return res.max()?: -1
 }
@@ -190,7 +190,7 @@ fun firstDuplicateIndex(str: String): Int {
     if (str.isEmpty()) return -1
     var st = String()
     var a = -1
-    for (element in str.split(Regex("\\s")).drop(1)) {
+    for (element in str.split(Regex("\\s"))) {
         if (element.toLowerCase() == st.toLowerCase()) a = (Regex("""$st\s$element""").find(str)!!.range.first)
         else st = element
     }
