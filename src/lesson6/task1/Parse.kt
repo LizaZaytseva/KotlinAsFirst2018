@@ -98,7 +98,8 @@ fun dateStrToDigit(str: String): String {
  */
 fun dateDigitToStr(digital: String): String {
     val x = Regex("""(\d{1,2}).(\d{2}).(\d+)""").matchEntire(digital)
-    val res = x!!.groupValues
+    if (x == null) return ""
+    val res = x.groupValues
     val date = res[1].toInt()
     val year = res[3].toInt()
     val numOfM = res[2].toInt()
