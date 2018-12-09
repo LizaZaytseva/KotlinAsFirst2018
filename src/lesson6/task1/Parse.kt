@@ -159,12 +159,12 @@ fun bestLongJump(jumps: String): Int {
 fun bestHighJump(jumps: String): Int {
     val res = mutableListOf<Int>()
     val x = jumps.split(Regex("""(?<=[+&-])\s"""))
-    for(element in x){
-        if(!Regex("""\d+\s[+%-]+\s?""").matches(element)) return -1
-        if (Regex("""\d+\+""").matches(Regex("""[%\s-]+""").replace(element,  "")))
+    for(element in x) {
+        if (!Regex("""\d+\s[+%-]+\s?""").matches(element)) return -1
+        if (Regex("""\d+\+""").matches(Regex("""[%\s-]+""").replace(element, "")))
                 res.add(element.replace((Regex("""[\s%+-]""")), "").toInt())
     }
-    return res.max()?: -1
+    return res.max() ?: -1
 }
 
 /**
@@ -286,36 +286,36 @@ fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> {
     var z =0
     for (i in 0 until cells) res.add(0)
     if (commands.isEmpty()) return res
-    if (Regex("""[<>\+\s-]*(\[.*\])*[<>\+\s-]*""").matches(commands)) {
+    if (Regex("""[<>+\s-]*(\[.*])*[<>+\s-]*""").matches(commands)) {
         for (i in 0 until commands.length) {
-            when (commands[i].toString()){
-            "[" -> numberOfBr++
-            "]" -> numberOfBr--
+            when (commands[i]){
+            '[' -> numberOfBr++
+            ']' -> numberOfBr--
             }
             if (numberOfBr < 0) throw  IllegalArgumentException(commands)
         }
         if (numberOfBr != 0) throw  IllegalArgumentException(commands)
             var m = cells / 2
             while ((numOfCommand <= commands.length - 1) && (numOfAction <= limit)) {
-                when (commands[numOfCommand].toString()) {
-                    "+" -> res[m]++
-                    "-" -> res[m]--
-                    ">" -> {
+                when (commands[numOfCommand]) {
+                    '+' -> res[m]++
+                    '-' -> res[m]--
+                    '>' -> {
                         if (m != cells - 1) {
                             m++
                         } else throw IllegalStateException(commands)
                     }
-                    "<" -> {
+                    '<' -> {
                         if (m != 0) {
                             m--
                         } else throw IllegalStateException(commands)
                     }
-                    "[" -> {
+                    '[' -> {
                         if (res[m] == 0) {
                             var p = 1
                             for (i in numOfCommand + 1..commands.length) {
-                                if (commands[i].toString() == "[") p++
-                                if (commands[i].toString() == "]") {
+                                if (commands[i] == '[') p++
+                                if (commands[i] == ']') {
                                     p--
                                     if (p == 0) {
                                         z = i + 1
@@ -326,12 +326,12 @@ fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> {
                             numOfCommand = z - 1
                         }
                     }
-                    "]" -> {
+                    ']' -> {
                         if (res[m] != 0) {
                             var p = -1
                             for (i in numOfCommand - 1 downTo 0) {
-                                if (commands[i].toString() == "]") p--
-                                if (commands[i].toString() == "[") {
+                                if (commands[i] == ']') p--
+                                if (commands[i] == '[') {
                                     p++
                                     if (p == 0) {
                                         z = i + 1
