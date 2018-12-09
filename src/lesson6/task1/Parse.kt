@@ -190,12 +190,11 @@ fun plusMinus(expression: String): Int = TODO()
 fun firstDuplicateIndex(str: String): Int {
     if (str.isEmpty()) return -1
     var st = String()
-    var a = -1
     for (element in str.split(Regex("\\s"))) {
-        if (element.toLowerCase() == st.toLowerCase()) a = (Regex("""$st\s$element""").find(str)!!.range.first)
+        if (element.toLowerCase() == st.toLowerCase()) return (Regex("""$st\s$element""").find(str)!!.range.first)
         else st = element
     }
-    return a
+    return -1
 }
 
 /**
@@ -216,11 +215,11 @@ fun mostExpensive(description: String): String {
     else {
         val s = description.split(Regex(""";"""))
         for (element in s) {
-            val price = Regex("""\d+""").find(element)!!.value.toDouble()
+            val price = Regex("""(?<=\s)\d+(.\d+)?""").find(element)!!.value.toDouble()
             val name = Regex("\\s+").replace(Regex(""".*(?=\s)""").find(element)!!.value, "")
             if(price > max) {
-                max = price
-                nameOfMax.add(name)
+               max = price
+               nameOfMax.add(name)
             }
         }
     }
@@ -284,12 +283,13 @@ fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> {
     var z =0
     for (i in 0 until cells) res.add(0)
     if (commands.isEmpty()) return res
-    if ((Regex("""[<>\+\s-\[\]]+""").matches(commands)) && (Regex("""[<>\+\s-]*(\[.*\])*[<>\+\s-]*""").matches(commands))) {
+    if (Regex("""[<>\+\s-]*(\[.*\])*[<>\+\s-]*""").matches(commands)) {
         for (i in 0 until commands.length) {
             when (commands[i].toString()){
             "[" -> numberOfBr++
             "]" -> numberOfBr--
             }
+            if (numberOfBr < 0) throw  IllegalArgumentException(commands)
         }
         if (numberOfBr != 0) throw  IllegalArgumentException(commands)
             var m = cells / 2
