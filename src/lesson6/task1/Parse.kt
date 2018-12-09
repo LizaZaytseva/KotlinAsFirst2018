@@ -191,7 +191,9 @@ fun firstDuplicateIndex(str: String): Int {
     if (str.isEmpty()) return -1
     var st = String()
     for (element in str.split(Regex("\\s"))) {
-        if (element.toLowerCase() == st.toLowerCase()) return (Regex("""\$st\s\$element""").find(str)!!.range.first)
+        if (element.toLowerCase() == st.toLowerCase()) {
+            return (Regex("""$st\s$element""").find(str)!!.range.first)
+        }
         else st = element
     }
     return -1
@@ -218,7 +220,7 @@ fun mostExpensive(description: String): String {
             val namePrice = element.trim().split(Regex("""\s+"""))
             val price = namePrice[1].toDouble()
             val name = namePrice[0]
-            if(price > max) {
+            if(price >= max) {
                max = price
                nameOfMax.add(name)
             }
