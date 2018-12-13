@@ -2,6 +2,8 @@
 
 package lesson7.task1
 
+import lesson4.task1.convertToString
+import lesson4.task1.mean
 import java.io.File
 
 /**
@@ -54,7 +56,18 @@ fun alignFile(inputName: String, lineLength: Int, outputName: String) {
  * Регистр букв игнорировать, то есть буквы е и Е считать одинаковыми.
  *
  */
-fun countSubstrings(inputName: String, substrings: List<String>): Map<String, Int> = TODO()
+fun countSubstrings(inputName: String, substrings: List<String>): Map<String, Int> {
+    val result = mutableMapOf<String, Int>()
+    for (element in substrings) {
+        var copy = 0
+        for (line in File(inputName).readLines()){
+            val allStr = Regex(element.toLowerCase()).findAll(line.toLowerCase())
+            allStr.forEach { copy++ }
+        }
+        result[element] = copy
+    }
+    return result
+}
 
 
 /**
@@ -71,7 +84,19 @@ fun countSubstrings(inputName: String, substrings: List<String>): Map<String, In
  *
  */
 fun sibilants(inputName: String, outputName: String) {
-    TODO()
+    var str = ""
+    File(outputName).bufferedWriter().use {
+        for (line in File(inputName).readLines()) {
+            str = Regex("""(?<=[шщчжШЩЧЖ])ы""").replace(line, "и")
+            str = Regex("""(?<=[шщчжШЩЧЖ])Ы""").replace(str, "И")
+            str = Regex("""(?<=[шщчжШЩЧЖ])я""").replace(str, "а")
+            str = Regex("""(?<=[шщчжШЩЧЖ])Я""").replace(str, "А")
+            str = Regex("""(?<=[шщчжШЩЧЖ])ю""").replace(str, "у")
+            str = Regex("""(?<=[шщчжШЩЧЖ])Ю""").replace(str, "У")
+            it.write(str)
+            it.newLine()
+        }
+    }
 }
 
 /**
@@ -144,7 +169,9 @@ fun alignFileByWidth(inputName: String, outputName: String) {
  * Ключи в ассоциативном массиве должны быть в нижнем регистре.
  *
  */
-fun top20Words(inputName: String): Map<String, Int> = TODO()
+fun top20Words(inputName: String): Map<String, Int> {
+    TODO()
+}
 
 /**
  * Средняя

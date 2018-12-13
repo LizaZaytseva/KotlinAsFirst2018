@@ -159,10 +159,13 @@ fun bestLongJump(jumps: String): Int {
 fun bestHighJump(jumps: String): Int {
     val res = mutableListOf<Int>()
     val x = jumps.split(Regex("""(?<=[+&-])\s"""))
-    for(element in x) {
+    for (element in x) {
+        val str = Regex("""[%\s-]+""").replace(element, "")
         if (!Regex("""\d+\s[+%-]+\s?""").matches(element)) return -1
-        if (Regex("""\d+\+""").matches(Regex("""[%\s-]+""").replace(element, "")))
-                res.add(element.replace((Regex("""[\s%+-]""")), "").toInt())
+        if (Regex("""\d+\+""").matches(str)) {
+            val max = element.replace((Regex("""[\s%+-]""")), "").toInt()
+            res.add(max)
+        }
     }
     return res.max() ?: -1
 }
@@ -190,11 +193,15 @@ fun plusMinus(expression: String): Int = TODO()
 fun firstDuplicateIndex(str: String): Int {
     if (str.isEmpty()) return -1
     var st = String()
+    var index = 0
     for (element in str.split(Regex("\\s"))) {
         if (element.toLowerCase() == st.toLowerCase()) {
-            return (Regex("""$st\s$element""").find(str)!!.range.first)
+            return (index - element.length - 1)
         }
-        else st = element
+        else {
+            st = element
+            index += element.length + 1
+        }
     }
     return -1
 }
@@ -212,21 +219,21 @@ fun firstDuplicateIndex(str: String): Int {
  */
 fun mostExpensive(description: String): String {
     var max = 0.0
-    val nameOfMax = mutableListOf<String>()
-    if (!Regex("""(.*\s\d+\.?\d*;?)+""").matches(description)) return ""
+    var nameOfMax = String()
+    if (!Regex("""(.*\s\d+\.?\d*;)*(.*\s\d+\.?\d*)""").matches(description)) return ""
     else {
-        val s = description.split(Regex(""";"""))
+        val s = description.split(""";""")
         for (element in s) {
             val namePrice = element.trim().split(Regex("""\s+"""))
             val price = namePrice[1].toDouble()
             val name = namePrice[0]
-            if(price >= max) {
-               max = price
-               nameOfMax.add(name)
+            if (price >= max) {
+                max = price
+                nameOfMax = name
             }
         }
     }
-    return nameOfMax.last()
+    return nameOfMax
 }
 
 /**
@@ -283,68 +290,72 @@ fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> {
     var numberOfBr = 0
     var numOfCommand = 0
     var numOfAction = 1
-    var z =0
+    var z = 0
     for (i in 0 until cells) res.add(0)
     if (commands.isEmpty()) return res
     if (Regex("""[<>+\s-]*(\[.*])*[<>+\s-]*""").matches(commands)) {
         for (i in 0 until commands.length) {
-            when (commands[i]){
-            '[' -> numberOfBr++
-            ']' -> numberOfBr--
+            when (commands[i]) {
+                '[' -> numberOfBr++
+                ']' -> numberOfBr--
             }
             if (numberOfBr < 0) throw  IllegalArgumentException(commands)
         }
         if (numberOfBr != 0) throw  IllegalArgumentException(commands)
-            var m = cells / 2
-            while ((numOfCommand <= commands.length - 1) && (numOfAction <= limit)) {
-                when (commands[numOfCommand]) {
-                    '+' -> res[m]++
-                    '-' -> res[m]--
-                    '>' -> {
-                        if (m != cells - 1) {
-                            m++
-                        } else throw IllegalStateException(commands)
-                    }
-                    '<' -> {
-                        if (m != 0) {
-                            m--
-                        } else throw IllegalStateException(commands)
-                    }
-                    '[' -> {
-                        if (res[m] == 0) {
-                            var p = 1
-                            for (i in numOfCommand + 1..commands.length) {
-                                if (commands[i] == '[') p++
-                                if (commands[i] == ']') {
+        var m = cells / 2
+        while ((numOfCommand <= commands.length - 1) && (numOfAction <= limit)) {
+            when (commands[numOfCommand]) {
+                '+' -> res[m]++
+                '-' -> res[m]--
+                '>' -> {
+                    if (m != cells - 1) {
+                        m++
+                    } else throw IllegalStateException(commands)
+                }
+                '<' -> {
+                    if (m != 0) {
+                        m--
+                    } else throw IllegalStateException(commands)
+                }
+                '[' -> {
+                    if (res[m] == 0) {
+                        var p = 1
+                        loop@ for (i in numOfCommand + 1..commands.length) {
+                            when (commands[i]) {
+                                '[' -> p++
+                                ']' -> {
                                     p--
                                     if (p == 0) {
                                         z = i + 1
-                                        break
+                                        break@loop
                                     }
                                 }
                             }
-                            numOfCommand = z - 1
                         }
                     }
-                    ']' -> {
-                        if (res[m] != 0) {
-                            var p = -1
-                            for (i in numOfCommand - 1 downTo 0) {
-                                if (commands[i] == ']') p--
-                                if (commands[i] == '[') {
+                    numOfCommand = z - 1
+                }
+                ']' -> {
+                    if (res[m] != 0) {
+                        var p = -1
+                        loop@ for (i in numOfCommand - 1 downTo 0) {
+                            when (commands[i]) {
+                                ']' -> p--
+                                '[' -> {
                                     p++
                                     if (p == 0) {
                                         z = i + 1
-                                        break
+                                        break@loop
                                     }
                                 }
                             }
                             numOfCommand = z - 1
                         }
                     }
+                    numOfAction++
+                    numOfCommand++
                 }
-                numOfAction++
-                numOfCommand++
+            }
         }
     } else throw  IllegalArgumentException(commands)
     return res
