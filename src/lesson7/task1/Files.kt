@@ -2,8 +2,6 @@
 
 package lesson7.task1
 
-import lesson4.task1.convertToString
-import lesson4.task1.mean
 import java.io.File
 
 /**
@@ -119,7 +117,6 @@ fun sibilants(inputName: String, outputName: String) {
 fun centerFile(inputName: String, outputName: String) {
     TODO()
 }
-
 /**
  * Сложная
  *

@@ -332,8 +332,8 @@ fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> {
                                 }
                             }
                         }
+                        numOfCommand = z - 1
                     }
-                    numOfCommand = z - 1
                 }
                 ']' -> {
                     if (res[m] != 0) {
@@ -349,13 +349,13 @@ fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> {
                                     }
                                 }
                             }
-                            numOfCommand = z - 1
                         }
+                        numOfCommand = z - 1
                     }
-                    numOfAction++
-                    numOfCommand++
                 }
             }
+            numOfCommand ++
+            numOfAction++
         }
     } else throw  IllegalArgumentException(commands)
     return res
