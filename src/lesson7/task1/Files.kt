@@ -82,10 +82,9 @@ fun countSubstrings(inputName: String, substrings: List<String>): Map<String, In
  *
  */
 fun sibilants(inputName: String, outputName: String) {
-    var str = ""
     File(outputName).bufferedWriter().use {
         for (line in File(inputName).readLines()) {
-            str = Regex("""(?<=[шщчжШЩЧЖ])ы""").replace(line, "и")
+           var str = Regex("""(?<=[шщчжШЩЧЖ])ы""").replace(line, "и")
             str = Regex("""(?<=[шщчжШЩЧЖ])Ы""").replace(str, "И")
             str = Regex("""(?<=[шщчжШЩЧЖ])я""").replace(str, "а")
             str = Regex("""(?<=[шщчжШЩЧЖ])Я""").replace(str, "А")
@@ -115,7 +114,21 @@ fun sibilants(inputName: String, outputName: String) {
  *
  */
 fun centerFile(inputName: String, outputName: String) {
-    TODO()
+    var maxLength = 0
+    for (line in File(inputName).readLines()) {
+        if (line.length >= maxLength) maxLength = line.length
+    }
+    val mid = maxLength / 2
+    File(outputName).bufferedWriter().use {
+        for (line in File(inputName).readLines()) {
+           var str = line.trim()
+            for (i in 1..mid - line.trim().length / 2 ) {
+                str = " $str"
+            }
+            it.write(str)
+            it.newLine()
+        }
+    }
 }
 /**
  * Сложная
@@ -167,7 +180,33 @@ fun alignFileByWidth(inputName: String, outputName: String) {
  *
  */
 fun top20Words(inputName: String): Map<String, Int> {
-    TODO()
+    val result = mutableMapOf<String, Int>()
+    val finalRes = mutableMapOf<String, Int>()
+    var k = 0
+    for (line in File(inputName).readLines()) {
+        val words = line.split(Regex("""[^a-zA-Zа-яА-ЯЁё]+"""))
+        for (word in words) {
+            if (word.isNotEmpty()) {
+                val w = word.toLowerCase()
+                if (result.containsKey(w)) result[w] = result[w]!! + 1
+                else result[w] = 1
+            }
+        }
+    }
+    if (result.size >= 20) k = 20 else k = result.size
+    for (i in 1.. k ) {
+        var max = 0
+        var maxKey = ""
+        for ((word , n) in result) {
+            if (n > max) {
+                max = n
+                maxKey = word
+            }
+        }
+        finalRes[maxKey] = max
+        result.remove(maxKey)
+    }
+    return finalRes
 }
 
 /**
@@ -206,7 +245,25 @@ fun top20Words(inputName: String): Map<String, Int> {
  * Обратите внимание: данная функция не имеет возвращаемого значения
  */
 fun transliterate(inputName: String, dictionary: Map<Char, String>, outputName: String) {
-    TODO()
+    File(outputName).bufferedWriter().use {
+        for (line in File(inputName).readLines()) {
+            var str = ""
+            for (i in 0 until line.length) {
+                val ch = line[i].toLowerCase()
+                if (dictionary.containsKey(ch)) {
+                    if (Regex("""[A-ZА-ЯЁ]""").matches(line[i].toString())) str = str + dictionary[ch].toString().toLowerCase().capitalize()
+                    else str += dictionary[ch].toString().toLowerCase()
+                }
+                else if (dictionary.containsKey(ch.toUpperCase())) {
+                    if (Regex("""[A-ZА-ЯЁ]""").matches(line[i].toString())) str = str + dictionary[ch.toUpperCase()].toString().capitalize()
+                    else str += dictionary[ch.toUpperCase()].toString().toLowerCase()
+                }
+                else str += line[i]
+            }
+            it.write(str)
+            it.newLine()
+        }
+    }
 }
 
 /**
@@ -234,7 +291,20 @@ fun transliterate(inputName: String, dictionary: Map<Char, String>, outputName: 
  * Обратите внимание: данная функция не имеет возвращаемого значения
  */
 fun chooseLongestChaoticWord(inputName: String, outputName: String) {
-    TODO()
+    val res = mutableListOf<String>()
+    val writer = File(outputName).bufferedWriter()
+    var maxLength = 0
+    for (line in File(inputName).readLines()) {
+        if (line.length == line.toLowerCase().toSet().size) res.add(line)
+    }
+    for (element in res) {
+        if (element.length > maxLength) maxLength = element.length
+    }
+    for (element in res) {
+        if (element.length < maxLength) res.remove(element)
+    }
+    writer.write(res.joinToString())
+    writer.close()
 }
 
 /**
