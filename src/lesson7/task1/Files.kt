@@ -122,10 +122,13 @@ fun centerFile(inputName: String, outputName: String) {
     File(outputName).bufferedWriter().use {
         for (line in File(inputName).readLines()) {
            var str = line.trim()
-            for (i in 1..mid - line.trim().length / 2 ) {
-                str = " $str"
+            if (str.length == maxLength) it.write(str)
+            else {
+                for (i in 1..mid - line.trim().length / 2) {
+                    str = " $str"
+                }
+                it.write(str)
             }
-            it.write(str)
             it.newLine()
         }
     }
