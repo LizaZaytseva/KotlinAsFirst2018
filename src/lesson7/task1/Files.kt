@@ -84,7 +84,7 @@ fun countSubstrings(inputName: String, substrings: List<String>): Map<String, In
 fun sibilants(inputName: String, outputName: String) {
     File(outputName).bufferedWriter().use {
         for (line in File(inputName).readLines()) {
-           var str = Regex("""(?<=[шщчжШЩЧЖ])ы""").replace(line, "и")
+            var str = Regex("""(?<=[шщчжШЩЧЖ])ы""").replace(line, "и")
             str = Regex("""(?<=[шщчжШЩЧЖ])Ы""").replace(str, "И")
             str = Regex("""(?<=[шщчжШЩЧЖ])я""").replace(str, "а")
             str = Regex("""(?<=[шщчжШЩЧЖ])Я""").replace(str, "А")
@@ -116,19 +116,16 @@ fun sibilants(inputName: String, outputName: String) {
 fun centerFile(inputName: String, outputName: String) {
     var maxLength = 0
     for (line in File(inputName).readLines()) {
-        if (line.length >= maxLength) maxLength = line.length
+        if (line.trim().length >= maxLength) maxLength = line.length
     }
     val mid = maxLength / 2
     File(outputName).bufferedWriter().use {
         for (line in File(inputName).readLines()) {
-           var str = line.trim()
-            if (str.length == maxLength) it.write(str)
-            else {
-                for (i in 1..mid - line.trim().length / 2) {
+            var str = line.trim()
+                repeat(mid - str.length / 2){
                     str = " $str"
                 }
                 it.write(str)
-            }
             it.newLine()
         }
     }
@@ -200,7 +197,7 @@ fun top20Words(inputName: String): Map<String, Int> {
     for (i in 1.. k ) {
         var max = 0
         var maxKey = ""
-        for ((word , n) in result) {
+        for ((word, n) in result) {
             if (n > max) {
                 max = n
                 maxKey = word
@@ -251,17 +248,17 @@ fun transliterate(inputName: String, dictionary: Map<Char, String>, outputName: 
     File(outputName).bufferedWriter().use {
         for (line in File(inputName).readLines()) {
             var str = ""
-            for (i in 0 until line.length) {
-                val ch = line[i].toLowerCase()
+            for (char in line) {
+                val ch = char.toLowerCase()
                 if (dictionary.containsKey(ch)) {
-                    if (Regex("""[A-ZА-ЯЁ]""").matches(line[i].toString())) str = str + dictionary[ch].toString().toLowerCase().capitalize()
-                    else str += dictionary[ch].toString().toLowerCase()
+                    if (Regex("""[A-ZА-ЯЁ]""").matches(char.toString())) str += dictionary[ch]!!.toLowerCase().capitalize()
+                    else str += dictionary[ch]!!.toLowerCase()
                 }
                 else if (dictionary.containsKey(ch.toUpperCase())) {
-                    if (Regex("""[A-ZА-ЯЁ]""").matches(line[i].toString())) str = str + dictionary[ch.toUpperCase()].toString().capitalize()
-                    else str += dictionary[ch.toUpperCase()].toString().toLowerCase()
+                    if (Regex("""[A-ZА-ЯЁ]""").matches(char.toString())) str += dictionary[ch.toUpperCase()]!!.toLowerCase().capitalize()
+                    else str += dictionary[ch.toUpperCase()]!!.toLowerCase()
                 }
-                else str += line[i]
+                else str += char
             }
             it.write(str)
             it.newLine()
@@ -297,17 +294,17 @@ fun chooseLongestChaoticWord(inputName: String, outputName: String) {
     val res = mutableListOf<String>()
     val writer = File(outputName).bufferedWriter()
     var maxLength = 0
+    File(outputName).bufferedWriter().use {
     for (line in File(inputName).readLines()) {
-        if (line.length == line.toLowerCase().toSet().size) res.add(line)
+        if (line.length == line.toLowerCase().toSet().size) {
+            res.add(line)
+            if (line.length > maxLength) maxLength = line.length
+        }
     }
-    for (element in res) {
-        if (element.length > maxLength) maxLength = element.length
-    }
-    for (element in res) {
-        if (element.length < maxLength) res.remove(element)
-    }
-    writer.write(res.joinToString())
+    val result = res.filter { it.length == maxLength }
+    writer.write(result.joinToString())
     writer.close()
+}
 }
 
 /**

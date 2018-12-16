@@ -220,9 +220,9 @@ fun firstDuplicateIndex(str: String): Int {
 fun mostExpensive(description: String): String {
     var max = 0.0
     var nameOfMax = String()
-    if (!Regex("""(.*\s\d+\.?\d*;)*(.*\s\d+\.?\d*)""").matches(description)) return ""
+    if (!Regex("""(.*\s\d+(\.\d+)?;)*(.*\s\d+(\.\d+)?)""").matches(description)) return ""
     else {
-        val s = description.split(""";""")
+        val s = description.split("; ")
         for (element in s) {
             val namePrice = element.trim().split(Regex("""\s+"""))
             val price = namePrice[1].toDouble()
@@ -354,7 +354,7 @@ fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> {
                     }
                 }
             }
-            numOfCommand ++
+            numOfCommand++
             numOfAction++
         }
     } else throw  IllegalArgumentException(commands)
