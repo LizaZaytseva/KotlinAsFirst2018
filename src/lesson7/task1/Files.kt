@@ -115,6 +115,7 @@ fun sibilants(inputName: String, outputName: String) {
  */
 fun centerFile(inputName: String, outputName: String) {
     var maxLength = 0
+    var cycles = 0
     for (line in File(inputName).readLines()) {
         if (line.trim().length >= maxLength) maxLength = line.length
     }
@@ -122,10 +123,12 @@ fun centerFile(inputName: String, outputName: String) {
     File(outputName).bufferedWriter().use {
         for (line in File(inputName).readLines()) {
             var str = line.trim()
-                repeat(mid - str.length / 2){
-                    str = " $str"
-                }
-                it.write(str)
+            cycles = mid - str.length / 2
+            if (mid % 2 != 0) cycles--
+            repeat(cycles) {
+                str = " $str"
+            }
+            it.write(str)
             it.newLine()
         }
     }
@@ -251,11 +254,11 @@ fun transliterate(inputName: String, dictionary: Map<Char, String>, outputName: 
             for (char in line) {
                 val ch = char.toLowerCase()
                 if (dictionary.containsKey(ch)) {
-                    if (Regex("""[A-ZА-ЯЁ]""").matches(char.toString())) str += dictionary[ch]!!.toLowerCase().capitalize()
+                    if (char == char.toUpperCase()) str += dictionary[ch]!!.toLowerCase().capitalize()
                     else str += dictionary[ch]!!.toLowerCase()
                 }
                 else if (dictionary.containsKey(ch.toUpperCase())) {
-                    if (Regex("""[A-ZА-ЯЁ]""").matches(char.toString())) str += dictionary[ch.toUpperCase()]!!.toLowerCase().capitalize()
+                    if (char == char.toUpperCase()) str += dictionary[ch.toUpperCase()]!!.toLowerCase().capitalize()
                     else str += dictionary[ch.toUpperCase()]!!.toLowerCase()
                 }
                 else str += char
