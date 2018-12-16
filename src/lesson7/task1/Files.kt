@@ -253,15 +253,16 @@ fun transliterate(inputName: String, dictionary: Map<Char, String>, outputName: 
             var str = ""
             for (char in line) {
                 val ch = char.toLowerCase()
-                if (dictionary.containsKey(ch)) {
-                    if (char == char.toUpperCase()) str += dictionary[ch]!!.toLowerCase().capitalize()
-                    else str += dictionary[ch]!!.toLowerCase()
+                if (Regex("""[^a-zA-Zа-яА-ЯёЁ]""").matches(ch.toString()) && dictionary.containsKey(ch)) str += dictionary[ch]!!.toLowerCase()
+                else {
+                    if (dictionary.containsKey(ch)) {
+                        if (char == char.toUpperCase()) str += dictionary[ch]!!.toLowerCase().capitalize()
+                        else str += dictionary[ch]!!.toLowerCase()
+                    } else if (dictionary.containsKey(ch.toUpperCase())) {
+                        if (char == char.toUpperCase()) str += dictionary[ch.toUpperCase()]!!.toLowerCase().capitalize()
+                        else str += dictionary[ch.toUpperCase()]!!.toLowerCase()
+                    } else str += char
                 }
-                else if (dictionary.containsKey(ch.toUpperCase())) {
-                    if (char == char.toUpperCase()) str += dictionary[ch.toUpperCase()]!!.toLowerCase().capitalize()
-                    else str += dictionary[ch.toUpperCase()]!!.toLowerCase()
-                }
-                else str += char
             }
             it.write(str)
             it.newLine()
