@@ -293,7 +293,7 @@ fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> {
     var z = 0
     for (i in 0 until cells) res.add(0)
     if (commands.isEmpty()) return res
-    if (Regex("""[><\[\]+-]+""").matches(commands)) {
+    if (Regex("""[><\[\]\s+-]+""").matches(commands)) {
         for (i in 0 until commands.length) {
             when (commands[i]) {
                 '[' -> numberOfBr++

@@ -251,8 +251,13 @@ fun transliterate(inputName: String, dictionary: Map<Char, String>, outputName: 
         val w = word.toLowerCase()
         dicInLowCase[w] = str.toLowerCase()
     }
+    var k = 0
+    for (line in File(inputName).readLines()) {
+        k++
+    }
     File(outputName).bufferedWriter().use {
         for (line in File(inputName).readLines()) {
+            k--
             var str = ""
             for (char in line) {
                 if (dicInLowCase.containsKey(char.toLowerCase())) {
@@ -261,7 +266,7 @@ fun transliterate(inputName: String, dictionary: Map<Char, String>, outputName: 
                 }
                 else str += char
             }
-            if (dicInLowCase.containsKey('\n')) {
+            if (dicInLowCase.containsKey('\n') && (k != 0)) {
                 str += dicInLowCase['\n']!!
                 it.write(str)
             }
